@@ -23,6 +23,7 @@
     "url": "https://github.com/WinWinKit/winwinkit-js/issues"
   },
   "devDependencies": {
+    "openapi-typescript": "^7.4.4",
     "typescript": "^5.7.2"
   }
 }
