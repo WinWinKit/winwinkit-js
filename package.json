@@ -1,0 +1,28 @@
+{
+  "name": "winwinkit",
+  "version": "0.1.0",
+  "description": "WinWinKit Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WinWinKit/winwinkit-js.git"
+  },
+  "keywords": [
+    "winwinkit",
+    "referral",
+    "platform",
+    "win"
+  ],
+  "author": "Oleh Stasula",
+  "license": "MIT",
+  "homepage": "https://github.com/WinWinKit/winwinkit-js#readme",
+  "bugs": {
+    "url": "https://github.com/WinWinKit/winwinkit-js/issues"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
