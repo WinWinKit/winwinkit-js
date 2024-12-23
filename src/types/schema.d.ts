@@ -196,6 +196,20 @@ export interface components {
          * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
          */
         ReferralUserAppUserId: string;
+        /** @description Error. */
+        Error: {
+            /** @description Code of the error. */
+            code: string;
+            /** @description Status code */
+            status: number;
+            /**
+             * @description Title of the error.
+             * @example Not found
+             */
+            title: string;
+            /** @description Source of the error. */
+            source: string | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -246,6 +260,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReferralUser"];
+                };
+            };
+            /** @description The referral user is not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

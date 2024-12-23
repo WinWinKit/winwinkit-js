@@ -25,14 +25,18 @@ export default class WinWinKit {
         this.projectKey = projectKey;
     }
 
-    public async referralUser(): Promise<ReferralUser | undefined> {
+    public async referralUser(): Promise<ReferralUser | null> {
         const client = this.createClient();
         const {data, error} = await client.GET('/referral/users/{app_user_id}', {
             path: {app_user_id: this.appUserId},
             headers: this.createHeaders()
         });
-        if (error)
+        if (error) {
+            if (error.status === 404) {
+                return null;
+            }
             throw error;
+        }
         return data;
     }
 
