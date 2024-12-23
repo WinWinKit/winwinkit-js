@@ -48,6 +48,26 @@ export interface paths {
         patch: operations["updateReferralUser"];
         trace?: never;
     };
+    "/referral/users/{app_user_id}/codes/{code}/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim Referral Code
+         * @description Claim referral code for the referral user.
+         */
+        post: operations["claimReferralUserCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/referral/users/{app_user_id}/push-token/register": {
         parameters: {
             query?: never;
@@ -243,6 +263,26 @@ export interface operations {
                 "application/json": components["schemas"]["ReferralUserUpdate"];
             };
         };
+        responses: {
+            /** @description The referral user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralUser"];
+                };
+            };
+        };
+    };
+    claimReferralUserCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description The referral user. */
             200: {

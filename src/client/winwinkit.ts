@@ -61,6 +61,17 @@ export default class WinWinKit {
         return data;
     }
 
+    public async claimReferralCode({code}: {code: string}): Promise<ReferralUser | undefined> {
+        const client = this.createClient();
+        const {data, error} = await client.POST('/referral/users/{app_user_id}/codes/{code}/claim', {
+            path: {app_user_id: this.appUserId, code: code},
+            headers: this.createHeaders(),
+        });
+        if (error)
+            throw error;
+        return data;
+    }
+
     private createClient() {
         return createClient<paths>({baseUrl: "https://api.winwinkit.com"})
     }
