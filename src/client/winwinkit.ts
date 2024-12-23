@@ -42,7 +42,7 @@ export default class WinWinKit {
 
     public async createReferralUser({referralUser}: {
         referralUser: ReferralUserCreate
-    }): Promise<ReferralUser | undefined> {
+    }): Promise<ReferralUser> {
         const client = this.createClient();
         const {data, error} = await client.POST('/referral/users', {
             headers: this.createHeaders(),
@@ -53,7 +53,7 @@ export default class WinWinKit {
         return data;
     }
 
-    public async updateReferralUser({referralUser}: {referralUser: ReferralUserUpdate}): Promise<ReferralUser | undefined> {
+    public async updateReferralUser({referralUser}: {referralUser: ReferralUserUpdate}): Promise<ReferralUser> {
         const client = this.createClient();
         const {data, error} = await client.PATCH('/referral/users/{app_user_id}', {
             path: {app_user_id: this.appUserId},
@@ -65,7 +65,7 @@ export default class WinWinKit {
         return data;
     }
 
-    public async claimReferralCode({code}: {code: string}): Promise<ReferralUser | undefined> {
+    public async claimReferralCode({code}: {code: string}): Promise<ReferralUser> {
         const client = this.createClient();
         const {data, error} = await client.POST('/referral/users/{app_user_id}/codes/{code}/claim', {
             path: {app_user_id: this.appUserId, code: code},
