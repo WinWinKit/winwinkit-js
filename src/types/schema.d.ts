@@ -14,7 +14,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Create a new referral user
+         * Create Referral User
          * @description Creates a new referral user in the database.
          */
         post: operations["createReferralUser"];
@@ -24,7 +24,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/referral/users/{id}": {
+    "/referral/users/{app_user_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -32,13 +32,57 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get the referral user by id
+         * Get Referral User
          * @description Returns the referral user by id.
          */
         get: operations["getReferralUser"];
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Referral User
+         * @description Update the referral user with new properties.
+         */
+        patch: operations["updateReferralUser"];
+        trace?: never;
+    };
+    "/referral/users/{app_user_id}/push-token/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register Push Token
+         * @description Register push token for referral user.
+         */
+        post: operations["registerReferralUserPushToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/referral/users/{app_user_id}/push-token/unregister": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Unregister Push Token
+         * @description Unregisters push token for referral user.
+         */
+        delete: operations["unregisterReferralUserPushToken"];
         options?: never;
         head?: never;
         patch?: never;
@@ -49,12 +93,9 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @description Create a new referral user. */
-        ReferralUserCreate: {
-            /**
-             * @description Unique identifier the user in your app.
-             * @example 8dfae4b5-1a2d-4c1e-9152-5297086a161c
-             */
-            app_user_id: string;
+        ReferralUserCreate: components["schemas"]["ReferralUser"];
+        /** @description Update a referral user with new properties. */
+        ReferralUserUpdate: {
             /**
              * @description Is the user premium.
              * @example true
@@ -72,32 +113,11 @@ export interface components {
             last_seen_at?: string | null;
             /**
              * @description Metadata object.
-             * @example {"key": "value"}
+             * @example {
+             *       "key": "value"
+             *     }
              */
-            metadata?: Record<string, never> | unknown[] | null;
-        };
-        /** @description Update a referral user with new properties. */
-        ReferralUserUpdate: {
-            /**
-             * @description Is the user premium.
-             * @example true
-             */
-            is_premium?: boolean | null;
-            /**
-             * @description Date when the user was first seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
-             */
-            first_seen_at?: string;
-            /**
-             * @description Date when the user was last seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
-             */
-            last_seen_at?: string;
-            /**
-             * @description Metadata object.
-             * @example {"key": "value"}
-             */
-            metadata?: Record<string, never> | unknown[] | null;
+            metadata?: Record<string, never> | unknown[];
         };
         /** @description Register a new push token for a referral user. */
         RegisterReferralUserPushToken: {
@@ -125,14 +145,9 @@ export interface components {
              */
             device_id: string;
         };
-        /** @description Create a new referral user. */
+        /** @description Referral user. */
         ReferralUser: {
-            id: components["schemas"]["ReferralUserId"];
-            /**
-             * @description Unique identifier the user in your app.
-             * @example 8dfae4b5-1a2d-4c1e-9152-5297086a161c
-             */
-            app_user_id: string;
+            app_user_id: components["schemas"]["ReferralUserAppUserId"];
             /**
              * @description Is the user premium.
              * @example true
@@ -150,15 +165,17 @@ export interface components {
             last_seen_at?: string | null;
             /**
              * @description Metadata object.
-             * @example {"key": "value"}
+             * @example {
+             *       "key": "value"
+             *     }
              */
-            metadata?: Record<string, never> | unknown[] | null;
+            metadata?: Record<string, never> | unknown[];
         };
         /**
          * @description The unique identifier of the referral user.
-         * @example
+         * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
          */
-        ReferralUserId: string;
+        ReferralUserAppUserId: string;
     };
     responses: never;
     parameters: never;
@@ -210,6 +227,77 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ReferralUser"];
                 };
+            };
+        };
+    };
+    updateReferralUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The referral user properties to update. */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReferralUserUpdate"];
+            };
+        };
+        responses: {
+            /** @description The referral user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralUser"];
+                };
+            };
+        };
+    };
+    registerReferralUserPushToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The referral user to create. */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RegisterReferralUserPushToken"];
+            };
+        };
+        responses: {
+            /** @description Empty content. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unregisterReferralUserPushToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The referral user to create. */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UnregisterReferralUserPushToken"];
+            };
+        };
+        responses: {
+            /** @description Empty content. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
