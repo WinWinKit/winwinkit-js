@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
 import type {paths} from "../types/schema";
-import {ReferralUser, ReferralUserCreate, ReferralUserUpdate} from "../types/referralUser";
+import {ReferralUser, ReferralUserCreate, ReferralUserUpdate} from "../types";
 
 /**
  * WinWinKit Client
