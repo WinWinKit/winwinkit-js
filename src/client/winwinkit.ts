@@ -6,30 +6,25 @@ import {GrantedRewards, ReferralUser, ReferralUserCreate, ReferralUserUpdate, Wi
  * WinWinKit Client
  */
 export default class WinWinKit {
-  private readonly appUserId: string;
   private readonly apiKey: string;
 
   /**
    * Construct a new WinWinKit instance.
-   * @param appUserId Unique identifier of your app's user.
    * @param apiKey The API key to configure the client with.
    */
   constructor({
-    appUserId,
     apiKey,
   }: {
-    appUserId: string;
     apiKey: string;
   }) {
-    this.appUserId = appUserId;
     this.apiKey = apiKey;
   }
 
-  public async referralUser(): Promise<ReferralUser | null> {
+  public async referralUser({appUserId}: {appUserId: string}): Promise<ReferralUser | null> {
     const client = this.createClient();
     const {data, error} = await client.GET('/referral/users/{app_user_id}', {
       params: {
-        path: {app_user_id: this.appUserId},
+        path: {app_user_id: appUserId},
         headers: this.createHeaders()
       }
     });
@@ -62,14 +57,15 @@ export default class WinWinKit {
 
   /**
    * Update a referral user.
+   * @param appUserId The app user id to update the referral user for.
    * @param referralUser The referral user to update.
    * @returns The updated referral user.
    */
-  public async updateReferralUser({referralUser}: { referralUser: ReferralUserUpdate }): Promise<ReferralUser> {
+  public async updateReferralUser({appUserId, referralUser}: { appUserId: string, referralUser: ReferralUserUpdate }): Promise<ReferralUser> {
     const client = this.createClient();
     const {data, error} = await client.PATCH('/referral/users/{app_user_id}', {
       params: {
-        path: {app_user_id: this.appUserId},
+        path: {app_user_id: appUserId},
         headers: this.createHeaders(),
         body: referralUser,
       }
@@ -81,17 +77,18 @@ export default class WinWinKit {
 
   /**
    * Claim a referral code.
+   * @param appUserId The app user id to claim the code for.
    * @param code The code to claim.
    * @returns The updated referral user and granted rewards.
    */
-  public async claimReferralCode({code}: { code: string }): Promise<{
+  public async claimReferralCode({appUserId, code}: { appUserId: string, code: string }): Promise<{
     referralUser: ReferralUser,
     grantedRewards: GrantedRewards
   }> {
     const client = this.createClient();
     const {data, error} = await client.POST('/referral/users/{app_user_id}/codes/{code}/claim', {
       params: {
-        path: {app_user_id: this.appUserId, code: code},
+        path: {app_user_id: appUserId, code: code},
         headers: this.createHeaders(),
       }
     });
@@ -102,18 +99,19 @@ export default class WinWinKit {
 
   /**
    * Withdraw credits.
+   * @param appUserId The app user id to withdraw the credits for.
    * @param key The key of the reward to withdraw.
    * @param amount The amount to withdraw.
    * @returns The updated referral user and withdraw credits result.
    */
-  public async withdrawCredits({key, amount}: { key: string, amount: number }): Promise<{
+  public async withdrawCredits({appUserId, key, amount}: { appUserId: string, key: string, amount: number }): Promise<{
     referralUser: ReferralUser,
     withdrawCredits: WithdrawCredits
   }> {
     const client = this.createClient();
     const {data, error} = await client.POST('/referral/users/{app_user_id}/rewards/credit/{key}/withdraw', {
       params: {
-        path: {app_user_id: this.appUserId, key: key},
+        path: {app_user_id: appUserId, key: key},
         headers: this.createHeaders(),
         body: {amount: amount},
       }
