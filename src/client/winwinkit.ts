@@ -115,6 +115,7 @@ export default class WinWinKit {
       params: {
         path: {app_user_id: this.appUserId, key: key},
         headers: this.createHeaders(),
+        body: {amount: amount},
       }
     });
     if (error)
