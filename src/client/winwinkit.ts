@@ -7,22 +7,22 @@ import {GrantedRewards, ReferralUser, ReferralUserCreate, ReferralUserUpdate, Wi
  */
 export default class WinWinKit {
   private readonly appUserId: string;
-  private readonly projectKey: string;
+  private readonly apiKey: string;
 
   /**
    * Construct a new WinWinKit instance.
    * @param appUserId Unique identifier of your app's user.
-   * @param projectKey The project key you wish to use to configure ``WinWinKit``.
+   * @param apiKey The API key to configure the client with.
    */
   constructor({
-                appUserId,
-                projectKey,
-              }: {
+    appUserId,
+    apiKey,
+  }: {
     appUserId: string;
-    projectKey: string;
+    apiKey: string;
   }) {
     this.appUserId = appUserId;
-    this.projectKey = projectKey;
+    this.apiKey = apiKey;
   }
 
   public async referralUser(): Promise<ReferralUser | null> {
@@ -130,7 +130,7 @@ export default class WinWinKit {
   private createHeaders() {
     return {
       'Content-Type': 'application/json',
-      'X-API-Key': this.projectKey,
+      'X-API-Key': this.apiKey,
     }
   }
 }
