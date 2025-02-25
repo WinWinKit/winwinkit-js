@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Create Referral User
-         * @description Creates a new referral user in the database.
+         * @description Create a referral user. Update the referral user if already exists.
          */
         post: operations["createReferralUser"];
         delete?: never;
@@ -28,12 +28,15 @@ export interface paths {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+            };
             cookie?: never;
         };
         /**
          * Get Referral User
-         * @description Returns the referral user by id.
+         * @description Get a referral user by app user id.
          */
         get: operations["getReferralUser"];
         put?: never;
@@ -43,7 +46,7 @@ export interface paths {
         head?: never;
         /**
          * Update Referral User
-         * @description Update the referral user with new properties.
+         * @description Update a referral user.
          */
         patch: operations["updateReferralUser"];
         trace?: never;
@@ -52,7 +55,12 @@ export interface paths {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+                /** @description The referral code to claim. */
+                code: string;
+            };
             cookie?: never;
         };
         get?: never;
@@ -68,41 +76,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/referral/users/{app_user_id}/push-token/register": {
+    "/referral/users/{app_user_id}/rewards/credit/{key}/withdraw": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+                /** @description The credit referral reward key. */
+                key: string;
+            };
             cookie?: never;
         };
         get?: never;
         put?: never;
         /**
-         * Register Push Token
-         * @description Register push token for referral user.
+         * Withdraw Credits
+         * @description Withdraw credits for the referral user.
          */
-        post: operations["registerReferralUserPushToken"];
+        post: operations["withdrawCreditReferralReward"];
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/referral/users/{app_user_id}/push-token/unregister": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Unregister Push Token
-         * @description Unregisters push token for referral user.
-         */
-        delete: operations["unregisterReferralUserPushToken"];
         options?: never;
         head?: never;
         patch?: never;
@@ -112,103 +105,463 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @description Create a new referral user. */
-        ReferralUserCreate: components["schemas"]["ReferralUser"];
-        /** @description Update a referral user with new properties. */
-        ReferralUserUpdate: {
-            /**
-             * @description Is the user premium.
-             * @example true
-             */
-            is_premium?: boolean | null;
-            /**
-             * @description Date when the user was first seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
-             */
-            first_seen_at?: string | null;
-            /**
-             * @description Date when the user was last seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
-             */
-            last_seen_at?: string | null;
-            /**
-             * @description Metadata object.
-             * @example {
-             *       "key": "value"
-             *     }
-             */
-            metadata?: Record<string, never> | unknown[];
-        };
-        /** @description Register a new push token for a referral user. */
-        RegisterReferralUserPushToken: {
-            /**
-             * @description Device identifier where the push token was received.
-             * @example 0dfae4b5-1a2d-4c1e-9152-5297086a161c
-             */
-            device_id: string;
-            /**
-             * @description Push token value.
-             * @example 0dfae4b5-1a2d-4c1e-9152-5297086a161c
-             */
-            token: string;
-            /**
-             * @description Push token type. Must be 'apns' or 'fcm'.
-             * @example apns
-             */
-            token_type: string;
-        };
-        /** @description Unregister push token for a referral user. */
-        UnregisterReferralUserPushToken: {
-            /**
-             * @description Device identifier where the push token was received.
-             * @example 0dfae4b5-1a2d-4c1e-9152-5297086a161c
-             */
-            device_id: string;
-        };
-        /** @description Referral user. */
-        ReferralUser: {
+        /** @description The referral user. */
+        ReferralUserCreate: {
             app_user_id: components["schemas"]["ReferralUserAppUserId"];
             /**
-             * @description Is the user premium.
+             * @description Is the referral user premium.
              * @example true
              */
             is_premium?: boolean | null;
             /**
-             * @description Date when the user was first seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
+             * @description Date when the referral user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
              */
             first_seen_at?: string | null;
             /**
-             * @description Date when the user was last seen at.
-             * @example 2020-11-20T08:47:11.782+00:00
+             * @description Date when the referral user was last seen at.
+             * @example 2025-02-10T10:28:18.104Z
              */
             last_seen_at?: string | null;
             /**
-             * @description Metadata object.
+             * @description Key-value object allowing you to store additional information.
              * @example {
              *       "key": "value"
              *     }
              */
-            metadata?: Record<string, never> | unknown[];
+            metadata?: Record<string, never>;
+        };
+        /** @description The referral user. */
+        ReferralUserUpdate: {
+            /**
+             * @description Is the referral user premium.
+             * @example true
+             */
+            is_premium?: boolean | null;
+            /**
+             * @description Date when the referral user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            first_seen_at?: string | null;
+            /**
+             * @description Date when the referral user was last seen at.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            last_seen_at?: string | null;
+            /**
+             * @description Key-value object allowing you to store additional information.
+             * @example {
+             *       "key": "value"
+             *     }
+             */
+            metadata?: Record<string, never>;
+        };
+        /** @description Granted rewards after claiming the referral code. */
+        GrantedRewards: {
+            basic: ({
+                /** @example null */
+                expires_at: string | null;
+            } & components["schemas"]["ReferralBasicReward"])[];
+            credit: ({
+                /** @example null */
+                expires_at: string | null;
+            } & components["schemas"]["ReferralCreditReward"])[];
         };
         /**
          * @description The unique identifier of the referral user.
          * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
          */
         ReferralUserAppUserId: string;
-        /** @description Error. */
-        Error: {
-            /** @description Code of the error. */
-            code: string;
-            /** @description Status code */
-            status: number;
+        ReferralUserResponse: {
+            /** @description Data object containing the referral user object. */
+            data: {
+                referral_user: components["schemas"]["ReferralUser"];
+            };
+        };
+        /** @description The referral user. */
+        ReferralUser: {
+            app_user_id: components["schemas"]["ReferralUserAppUserId"];
             /**
-             * @description Title of the error.
-             * @example Not found
+             * @description The referral code.
+             * @example XYZ123
              */
+            code: string | null;
+            /**
+             * @description Link to Preview Link with user's referral code.
+             * @example https://example.wwk.link/XYZ123
+             */
+            preview_link: string | null;
+            /**
+             * @description Is the referral user premium.
+             * @example true
+             */
+            is_premium?: boolean | null;
+            /**
+             * @description Date when the referral user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            first_seen_at?: string | null;
+            /**
+             * @description Date when the referral user was last seen at.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            last_seen_at?: string | null;
+            /**
+             * @description Key-value object allowing you to store additional information.
+             * @example {
+             *       "key": "value"
+             *     }
+             */
+            metadata?: Record<string, never>;
+            program: components["schemas"]["ReferralProgram"];
+            claim_code_eligibility: components["schemas"]["ReferralUserClaimCodeEligibilitySchema"];
+            rewards: components["schemas"]["ReferralUserRewards"];
+            stats: components["schemas"]["ReferralUserStats"];
+        };
+        /** @description Referral program. */
+        ReferralProgram: {
+            /**
+             * @description Identifier of the referral program.
+             * @example 77dc-5508-40d3-8723-472e884b55fe
+             */
+            id: string;
+            /**
+             * @description Name of the referral program.
+             * @example Free month
+             */
+            name: string;
+            /**
+             * @description Description of the referral program.
+             * @example Free month for each invited user.
+             */
+            description: string;
+            /**
+             * @description Distribution percentage of the referral program among newly registered users.
+             * @example 100
+             */
+            distribution_percentage: number;
+            /**
+             * @description Limit of how many times referral code can be claimed.
+             * @example 100
+             */
+            limit: number;
+            /**
+             * @description Key-value object allowing you to store additional information.
+             * @example {
+             *       "key": "value"
+             *     }
+             */
+            metadata?: Record<string, never>;
+            rewards: {
+                sender: components["schemas"]["ReferralProgramSenderRewards"];
+                receiver: components["schemas"]["ReferralProgramReceiverRewards"];
+            };
+        };
+        ReferralProgramSenderRewards: {
+            basic: {
+                /** @example {
+                 *       "variant": "claim",
+                 *       "amount": 1
+                 *     } */
+                activationConfiguration: {
+                    /** @enum {string} */
+                    variant: "claim" | "conversion";
+                    amount: number;
+                };
+                /** @example {
+                 *       "variant": "never"
+                 *     } */
+                deactivationConfiguration: {
+                    /** @constant */
+                    variant: "never";
+                } | {
+                    /** @constant */
+                    variant: "interval";
+                    duration: number;
+                    /** @enum {string} */
+                    period: "days" | "months" | "years";
+                };
+            } & components["schemas"]["ReferralBasicReward"];
+            credit: {
+                /**
+                 * @description Limit of how many times the reward can be granted to the same referral user. Zero means that the reward can be activated unlimited amount of times.
+                 * @example 0
+                 */
+                limit: number;
+                /** @example {
+                 *       "variant": "claim",
+                 *       "amount": 1
+                 *     } */
+                activationConfiguration: {
+                    /** @enum {string} */
+                    variant: "claim" | "conversion";
+                    amount: number;
+                };
+                /** @example {
+                 *       "variant": "never"
+                 *     } */
+                deactivationConfiguration: {
+                    /** @constant */
+                    variant: "never";
+                } | {
+                    /** @constant */
+                    variant: "interval";
+                    duration: number;
+                    /** @enum {string} */
+                    period: "days" | "months" | "years";
+                };
+            } & components["schemas"]["ReferralCreditReward"];
+        };
+        ReferralBasicReward: {
+            /**
+             * @description The referral reward key.
+             * @example extended-premium-trial
+             */
+            key: string;
+            /**
+             * @description The referral reward name.
+             * @example Extended Premium Trial
+             */
+            name: string;
+            /**
+             * @description The referral reward description.
+             * @example Extend Premium trial for 14 more days.
+             */
+            description: string | null;
+            /**
+             * @description Key-value object storing additional information. Configurable via the dashboard.
+             * @example {
+             *       "key": "value"
+             *     }
+             */
+            metadata?: Record<string, never>;
+        };
+        ReferralCreditReward: {
+            /**
+             * @description The referral reward key.
+             * @example credits-level-one
+             */
+            key: string;
+            /**
+             * @description The amount of credits remaining with the reward.
+             * @example 100
+             */
+            credits: number;
+            /**
+             * @description The referral reward name.
+             * @example Level one
+             */
+            name: string;
+            /**
+             * @description The referral reward description.
+             * @example Grant credits for completing 100 levels.
+             */
+            description: string | null;
+            /**
+             * @description Key-value object storing additional information. Configurable via the dashboard.
+             * @example {
+             *       "key": "value"
+             *     }
+             */
+            metadata?: Record<string, never>;
+        };
+        ReferralProgramReceiverRewards: {
+            basic: {
+                /** @example {
+                 *       "variant": "claim"
+                 *     } */
+                activationConfiguration: {
+                    /** @enum {string} */
+                    variant: "claim" | "conversion";
+                };
+                /** @example {
+                 *       "variant": "never"
+                 *     } */
+                deactivationConfiguration: {
+                    /** @constant */
+                    variant: "never";
+                } | {
+                    /** @constant */
+                    variant: "interval";
+                    duration: number;
+                    /** @enum {string} */
+                    period: "days" | "months" | "years";
+                };
+            } & components["schemas"]["ReferralBasicReward"];
+            credit: {
+                /** @example {
+                 *       "variant": "claim"
+                 *     } */
+                activationConfiguration: {
+                    /** @enum {string} */
+                    variant: "claim" | "conversion";
+                };
+                /** @example {
+                 *       "variant": "never"
+                 *     } */
+                deactivationConfiguration: {
+                    /** @constant */
+                    variant: "never";
+                } | {
+                    /** @constant */
+                    variant: "interval";
+                    duration: number;
+                    /** @enum {string} */
+                    period: "days" | "months" | "years";
+                };
+            } & components["schemas"]["ReferralCreditReward"];
+        };
+        /** @description Referral user's eligibility to claim referral code. */
+        ReferralUserClaimCodeEligibilitySchema: {
+            /**
+             * @description The claim code eligibility flag.
+             * @example true
+             */
+            eligible: boolean;
+            /**
+             * @description The claim code eligibility until date.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            eligible_until: string | null;
+        };
+        /** @description Referral user's rewards. */
+        ReferralUserRewards: {
+            /** @description Active referral user's rewards. */
+            active: {
+                basic: components["schemas"]["ReferralUserActiveBasicReward"][];
+                credit: components["schemas"]["ReferralUserActiveCreditReward"][];
+            };
+            /** @description Expired referral user's rewards. */
+            expired: {
+                basic: components["schemas"]["ReferralUserExpiredBasicReward"][];
+                credit: components["schemas"]["ReferralUserExpiredCreditReward"][];
+            };
+        };
+        ReferralUserActiveBasicReward: {
+            /**
+             * @description Date when the referral reward expires.
+             * @example null
+             */
+            expires_at?: string | null;
+            /**
+             * @description Date when the referral reward created.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            created_at: string;
+        } & components["schemas"]["ReferralBasicReward"];
+        ReferralUserActiveCreditReward: {
+            /**
+             * @description Date when the referral reward expires.
+             * @example null
+             */
+            expires_at?: string | null;
+            /**
+             * @description Date when the referral reward created.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            created_at: string;
+        } & components["schemas"]["ReferralCreditReward"];
+        ReferralUserExpiredBasicReward: {
+            /**
+             * @description Date when the referral reward expired.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            expires_at: string;
+            /**
+             * @description Date when the referral reward created.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            created_at: string;
+        } & components["schemas"]["ReferralBasicReward"];
+        ReferralUserExpiredCreditReward: {
+            /**
+             * @description Date when the referral reward expired.
+             * @example 2025-02-10T10:28:18.104Z
+             */
+            expires_at: string;
+            /**
+             * @description Date when the referral reward created.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            created_at: string;
+        } & components["schemas"]["ReferralCreditReward"];
+        /** @description Referral user's statistics. */
+        ReferralUserStats: {
+            /**
+             * @description How many users claimed the referral code of this referral user.
+             * @example 10
+             */
+            claims: number;
+            /**
+             * @description How many users who claimed the referral code of this referral used converted to premium. Requires you to update `is_premium` property of referral users.
+             * @example 8
+             */
+            conversions: number;
+            /**
+             * @description How many users who claimed the referral code of this referral used converted to premium and then churned. Requires you to update `is_premium` property of referral users.
+             * @example 1
+             */
+            churns: number;
+        };
+        /** @description The error details that an API returns in the response body whenever the API request isn’t successful. */
+        ErrorResponse: {
+            /** @description An array of one or more errors. */
+            errors: components["schemas"]["Error"][];
+        };
+        /** @description The details about an error that is returned when an API request isn’t successful. */
+        Error: {
+            /** @description A machine-readable code indicating the type of error. This value is parseable for programmatic error handling in code. */
+            code: string;
+            /** @description The HTTP status code of the error. This status code usually matches the response’s status code; however, if the request produces multiple errors, these two codes may differ. */
+            status: number;
+            /** @description A summary of the error. Do not use this field for programmatic error handling. */
             title: string;
-            /** @description Source of the error. */
+            /** @description Parameter that produced the error. */
             source: string | null;
+        };
+        ClaimReferralCodeResponse: {
+            /** @description Data object containing the referral user and granted rewards objects. */
+            data: {
+                referral_user: components["schemas"]["ReferralUser"];
+                granted_rewards: components["schemas"]["GrantedRewards"];
+            };
+        };
+        ReferralUserWithdrawCreditReward: {
+            /**
+             * @description The credits amount to withdraw.
+             * @example 10
+             */
+            credits: number;
+        };
+        WithdrawCreditsResponse: {
+            /** @description Data object containing the referral user and withdraw result objects. */
+            data: {
+                referral_user: components["schemas"]["ReferralUser"];
+                withdraw_result: components["schemas"]["WithdrawCredits"];
+            };
+        };
+        /** @description Withdraw credits result. */
+        WithdrawCredits: {
+            /**
+             * @description Credits available at start.
+             * @example 100
+             */
+            credits_available_at_start: number;
+            /**
+             * @description Credits available at end.
+             * @example 90
+             */
+            credits_available_at_end: number;
+            /**
+             * @description Credits requested to withdraw.
+             * @example 10
+             */
+            credits_requested_to_withdraw: number;
+            /**
+             * @description Credits actually withdrawn.
+             * @example 10
+             */
+            credits_withdrawn: number;
         };
     };
     responses: never;
@@ -226,20 +579,55 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description The referral user to create. */
         requestBody?: {
             content: {
                 "application/json": components["schemas"]["ReferralUserCreate"];
             };
         };
         responses: {
-            /** @description The referral user was created successfully. */
+            /** @description Referral user updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralUserResponse"];
+                };
+            };
+            /** @description Referral user created. */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUser"];
+                    "application/json": components["schemas"]["ReferralUserResponse"];
+                };
+            };
+            /** @description Bad Request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -248,7 +636,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -259,16 +650,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUser"];
+                    "application/json": components["schemas"]["ReferralUserResponse"];
                 };
             };
-            /** @description The referral user is not found. */
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -277,23 +677,61 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+            };
             cookie?: never;
         };
-        /** @description The referral user properties to update. */
         requestBody?: {
             content: {
                 "application/json": components["schemas"]["ReferralUserUpdate"];
             };
         };
         responses: {
-            /** @description The referral user. */
+            /** @description Referral user updated. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUser"];
+                    "application/json": components["schemas"]["ReferralUserResponse"];
+                };
+            };
+            /** @description Bad Request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -302,7 +740,12 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+                /** @description The referral code to claim. */
+                code: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -313,54 +756,91 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUser"];
+                    "application/json": components["schemas"]["ClaimReferralCodeResponse"];
+                };
+            };
+            /** @description Bad Request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Method Not Allowed. */
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
     };
-    registerReferralUserPushToken: {
+    withdrawCreditReferralReward: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description The app user id of the referral user. */
+                app_user_id: string;
+                /** @description The credit referral reward key. */
+                key: string;
+            };
             cookie?: never;
         };
-        /** @description The referral user to create. */
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["RegisterReferralUserPushToken"];
+                "application/json": components["schemas"]["ReferralUserWithdrawCreditReward"];
             };
         };
         responses: {
-            /** @description Empty content. */
-            201: {
+            /** @description The withdraw credits completed. Check data.withdraw_result object for details. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["WithdrawCreditsResponse"];
+                };
             };
-        };
-    };
-    unregisterReferralUserPushToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description The referral user to create. */
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["UnregisterReferralUserPushToken"];
-            };
-        };
-        responses: {
-            /** @description Empty content. */
-            204: {
+            /** @description Unauthorized. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
