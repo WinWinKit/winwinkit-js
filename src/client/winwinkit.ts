@@ -42,6 +42,11 @@ export default class WinWinKit {
     return data.data.referral_user;
   }
 
+  /**
+   * Create a new referral user.
+   * @param referralUser The referral user to create.
+   * @returns The created referral user.
+   */
   public async createReferralUser({referralUser}: {
     referralUser: ReferralUserCreate
   }): Promise<ReferralUser> {
@@ -55,6 +60,11 @@ export default class WinWinKit {
     return data.data.referral_user;
   }
 
+  /**
+   * Update a referral user.
+   * @param referralUser The referral user to update.
+   * @returns The updated referral user.
+   */
   public async updateReferralUser({referralUser}: { referralUser: ReferralUserUpdate }): Promise<ReferralUser> {
     const client = this.createClient();
     const {data, error} = await client.PATCH('/referral/users/{app_user_id}', {
@@ -69,6 +79,11 @@ export default class WinWinKit {
     return data.data.referral_user;
   }
 
+  /**
+   * Claim a referral code.
+   * @param code The code to claim.
+   * @returns The updated referral user and granted rewards.
+   */
   public async claimReferralCode({code}: { code: string }): Promise<{
     referralUser: ReferralUser,
     grantedRewards: GrantedRewards
@@ -85,6 +100,12 @@ export default class WinWinKit {
     return {referralUser: data.data.referral_user, grantedRewards: data.data.granted_rewards};
   }
 
+  /**
+   * Withdraw credits.
+   * @param key The key of the reward to withdraw.
+   * @param amount The amount to withdraw.
+   * @returns The updated referral user and withdraw credits result.
+   */
   public async withdrawCredits({key, amount}: { key: string, amount: number }): Promise<{
     referralUser: ReferralUser,
     withdrawCredits: WithdrawCredits
