@@ -1,5 +1,5 @@
 {
-  "name": "winwinkit",
+  "name": "@winwinkit/sdk",
   "version": "0.1.4",
   "description": "WinWinKit Client",
   "main": "dist/index.js",
@@ -29,5 +29,6 @@
   "devDependencies": {
     "openapi-typescript": "^7.4.4",
     "typescript": "^5.7.2"
-  }
+  },
+  "types": "./dist/index.d.ts"
 }
