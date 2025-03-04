@@ -466,7 +466,7 @@ export interface components {
              * @description Date when the referral reward expired.
              * @example 2025-02-10T10:28:18.104Z
              */
-            expires_at: string;
+            expired_at: string;
             /**
              * @description Date when the referral reward created.
              * @example 2024-11-10T10:28:18.104Z
@@ -478,7 +478,7 @@ export interface components {
              * @description Date when the referral reward expired.
              * @example 2025-02-10T10:28:18.104Z
              */
-            expires_at: string;
+            expired_at: string;
             /**
              * @description Date when the referral reward created.
              * @example 2024-11-10T10:28:18.104Z
