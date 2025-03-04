@@ -26,3 +26,29 @@ bun add @winwinkit/sdk
 
 ```bash
 yarn add @winwinkit/sdk
+```
+
+## SDK Example Usage
+
+### Example
+
+```typescript
+import { WinWinKit } from 'winwinkit'
+
+const wwk = new WinWinKit({
+  apiKey: process.env['WINWINKIT_API_KEY'] ?? '',
+})
+
+// Create referral user.
+const referralUser = await wwk.createReferralUser({
+  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c"
+})
+
+...
+
+// Claim referral code.
+const { referralUser, grantedRewards } = await wwk.claimReferralCode({ 
+  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c",
+  code: "XYZ123"
+})
+```
