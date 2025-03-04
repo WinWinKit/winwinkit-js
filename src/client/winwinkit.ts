@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
 import type {paths} from "../types/schema";
-import {GrantedRewards, ReferralUser, ReferralUserCreate, ReferralUserUpdate, WithdrawCredits} from "../types";
+import { GrantedRewards, ReferralUser, WithdrawCredits } from "../types";
 
 /**
  * WinWinKit Client
@@ -39,16 +39,30 @@ export default class WinWinKit {
 
   /**
    * Create a new referral user.
-   * @param referralUser The referral user to create.
+   * @param appUserId The app user id to create the referral user for.
+   * @param isPremium Whether the user is a premium user. Optional.
+   * @param firstSeenAt The date and time the user was first seen. Optional.
+   * @param lastSeenAt The date and time the user was last seen. Optional.
+   * @param metadata The metadata of the referral user. Optional.
    * @returns The created referral user.
    */
-  public async createReferralUser({referralUser}: {
-    referralUser: ReferralUserCreate
+  public async createReferralUser({ appUserId, isPremium, firstSeenAt, lastSeenAt, metadata }: {
+    appUserId: string,
+    isPremium?: boolean,
+    firstSeenAt?: Date,
+    lastSeenAt?: Date,
+    metadata?: Record<string, never>
   }): Promise<ReferralUser> {
     const client = this.createClient();
     const {data, error} = await client.POST('/referral/users', {
       headers: this.createHeaders(),
-      body: referralUser,
+      body: {
+        app_user_id: appUserId,
+        is_premium: isPremium,
+        first_seen_at: firstSeenAt?.toISOString(),
+        last_seen_at: lastSeenAt?.toISOString(),
+        metadata,
+      },
     });
     if (error)
       throw error;
@@ -58,16 +72,30 @@ export default class WinWinKit {
   /**
    * Update a referral user.
    * @param appUserId The app user id to update the referral user for.
-   * @param referralUser The referral user to update.
+   * @param isPremium Whether the user is a premium user. Optional.
+   * @param firstSeenAt The date and time the user was first seen. Optional.
+   * @param lastSeenAt The date and time the user was last seen. Optional.
+   * @param metadata The metadata of the referral user. Optional.
    * @returns The updated referral user.
    */
-  public async updateReferralUser({appUserId, referralUser}: { appUserId: string, referralUser: ReferralUserUpdate }): Promise<ReferralUser> {
+  public async updateReferralUser({ appUserId, isPremium, firstSeenAt, lastSeenAt, metadata }: {
+    appUserId: string,
+    isPremium?: boolean,
+    firstSeenAt?: Date,
+    lastSeenAt?: Date,
+    metadata?: Record<string, never>
+  }): Promise<ReferralUser> {
     const client = this.createClient();
     const {data, error} = await client.PATCH('/referral/users/{app_user_id}', {
       params: {
         path: {app_user_id: appUserId},
         headers: this.createHeaders(),
-        body: referralUser,
+        body: {
+          is_premium: isPremium,
+          first_seen_at: firstSeenAt?.toISOString(),
+          last_seen_at: lastSeenAt?.toISOString(),
+          metadata,
+        },
       }
     });
     if (error)
