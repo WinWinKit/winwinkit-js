@@ -4,7 +4,27 @@
  */
 
 export interface paths {
-    "/referral/users": {
+    "/app-store/offer-codes/{offer_code_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Offer Code
+         * @description Get an offer code with subscription and prices by the offer code id.
+         */
+        get: operations["AppStoreController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users": {
         parameters: {
             query?: never;
             header?: never;
@@ -14,87 +34,70 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Create Referral User
-         * @description Create a referral user. Update the referral user if already exists.
+         * Create User
+         * @description Create a user. Update the user if already exists.
          */
-        post: operations["createReferralUser"];
+        post: operations["UsersController_createOrUpdate"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/referral/users/{app_user_id}": {
+    "/users/{app_user_id}": {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description The app user id of the referral user. */
-                app_user_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         /**
-         * Get Referral User
-         * @description Get a referral user by app user id.
+         * Get User
+         * @description Retrieves a user by their app user id.
          */
-        get: operations["getReferralUser"];
+        get: operations["UsersController_fetch"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * Update Referral User
-         * @description Update a referral user.
-         */
-        patch: operations["updateReferralUser"];
-        trace?: never;
-    };
-    "/referral/users/{app_user_id}/codes/{code}/claim": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The app user id of the referral user. */
-                app_user_id: string;
-                /** @description The referral code to claim. */
-                code: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Claim Referral Code
-         * @description Claim referral code for the referral user.
-         */
-        post: operations["claimReferralUserCode"];
-        delete?: never;
-        options?: never;
-        head?: never;
         patch?: never;
         trace?: never;
     };
-    "/referral/users/{app_user_id}/rewards/credit/{key}/withdraw": {
+    "/users/{app_user_id}/rewards/withdraw": {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description The app user id of the referral user. */
-                app_user_id: string;
-                /** @description The credit referral reward key. */
-                key: string;
-            };
+            path?: never;
             cookie?: never;
         };
         get?: never;
         put?: never;
         /**
          * Withdraw Credits
-         * @description Withdraw credits for the referral user.
+         * @description Withdraws credits from a user.
          */
-        post: operations["withdrawCreditReferralReward"];
+        post: operations["UsersRewardsController_withdrawCreditRewards"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{app_user_id}/claim/referral-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim Referral Code
+         * @description Claims a referral code for a user.
+         */
+        post: operations["UsersClaimController_claimReferralCode"];
         delete?: never;
         options?: never;
         head?: never;
@@ -105,463 +108,970 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @description The referral user. */
-        ReferralUserCreate: {
-            app_user_id: components["schemas"]["ReferralUserAppUserId"];
-            /**
-             * @description Is the referral user premium.
-             * @example true
-             */
-            is_premium?: boolean | null;
-            /**
-             * @description Date when the referral user was first seen at.
-             * @example 2024-11-10T10:28:18.104Z
-             */
-            first_seen_at?: string | null;
-            /**
-             * @description Date when the referral user was last seen at.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            last_seen_at?: string | null;
-            /**
-             * @description Key-value object allowing you to store additional information.
-             * @example {
-             *       "key": "value"
-             *     }
-             */
-            metadata?: Record<string, never>;
+        /** @description Error Object */
+        Error: {
+            code: string;
+            status: number;
+            message: string;
+            source: Record<string, never>;
         };
-        /** @description The referral user. */
-        ReferralUserUpdate: {
-            /**
-             * @description Is the referral user premium.
-             * @example true
-             */
-            is_premium?: boolean | null;
-            /**
-             * @description Date when the referral user was first seen at.
-             * @example 2024-11-10T10:28:18.104Z
-             */
-            first_seen_at?: string | null;
-            /**
-             * @description Date when the referral user was last seen at.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            last_seen_at?: string | null;
-            /**
-             * @description Key-value object allowing you to store additional information.
-             * @example {
-             *       "key": "value"
-             *     }
-             */
-            metadata?: Record<string, never>;
+        /** @description Errors Response */
+        ErrorsResponse: {
+            errors: components["schemas"]["Error"][];
         };
-        /** @description Granted rewards after claiming the referral code. */
-        GrantedRewards: {
-            basic: ({
-                /** @example null */
-                expires_at: string | null;
-            } & components["schemas"]["ReferralBasicReward"])[];
-            credit: ({
-                /** @example null */
-                expires_at: string | null;
-            } & components["schemas"]["ReferralCreditReward"])[];
+        /** @description The price */
+        AppStorePrice: {
+            /**
+             * @description The price territory.
+             * @example USA
+             */
+            territory: string;
+            /**
+             * @description The price amount.
+             * @example 99.99
+             */
+            price: string;
+            /**
+             * @description The price currency.
+             * @example USD
+             */
+            currency: string;
         };
-        /**
-         * @description The unique identifier of the referral user.
-         * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
-         */
-        ReferralUserAppUserId: string;
-        ReferralUserResponse: {
-            /** @description Data object containing the referral user object. */
-            data: {
-                referral_user: components["schemas"]["ReferralUser"];
-            };
-        };
-        /** @description The referral user. */
-        ReferralUser: {
-            app_user_id: components["schemas"]["ReferralUserAppUserId"];
+        /** @description The offer code */
+        AppStoreOfferCode: {
             /**
-             * @description The referral code.
-             * @example XYZ123
-             */
-            code: string | null;
-            /**
-             * @description Link to Preview Link with user's referral code.
-             * @example https://example.wwk.link/XYZ123
-             */
-            preview_link: string | null;
-            /**
-             * @description Is the referral user premium.
-             * @example true
-             */
-            is_premium?: boolean | null;
-            /**
-             * @description Date when the referral user was first seen at.
-             * @example 2024-11-10T10:28:18.104Z
-             */
-            first_seen_at?: string | null;
-            /**
-             * @description Date when the referral user was last seen at.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            last_seen_at?: string | null;
-            /**
-             * @description Key-value object allowing you to store additional information.
-             * @example {
-             *       "key": "value"
-             *     }
-             */
-            metadata?: Record<string, never>;
-            program: components["schemas"]["ReferralProgram"];
-            claim_code_eligibility: components["schemas"]["ReferralUserClaimCodeEligibilitySchema"];
-            rewards: components["schemas"]["ReferralUserRewards"];
-            stats: components["schemas"]["ReferralUserStats"];
-        };
-        /** @description Referral program. */
-        ReferralProgram: {
-            /**
-             * @description Identifier of the referral program.
-             * @example 77dc-5508-40d3-8723-472e884b55fe
+             * @description The offer code id.
+             * @example 123e4567-e89b-12d3-a456-426614174000
              */
             id: string;
             /**
-             * @description Name of the referral program.
-             * @example Free month
+             * @description The offer code name.
+             * @example Three months at 50% off
              */
             name: string;
             /**
-             * @description Description of the referral program.
-             * @example Free month for each invited user.
+             * @description The offer code customer eligibilities.
+             * @example [
+             *       "NEW",
+             *       "EXISTING",
+             *       "EXPIRED"
+             *     ]
              */
-            description: string;
+            customer_eligibilities: string[];
             /**
-             * @description Distribution percentage of the referral program among newly registered users.
-             * @example 100
+             * @description The offer code offer eligibility.
+             * @example STACK_WITH_INTRO_OFFERS
+             * @enum {string}
              */
-            distribution_percentage: number;
+            offer_eligibility: "STACK_WITH_INTRO_OFFERS" | "REPLACE_INTRO_OFFERS";
             /**
-             * @description Limit of how many times referral code can be claimed.
-             * @example 100
+             * @description The offer code duration.
+             * @example THREE_MONTHS
+             * @enum {string}
              */
-            limit: number;
+            duration: "THREE_DAYS" | "ONE_WEEK" | "TWO_WEEKS" | "ONE_MONTH" | "TWO_MONTHS" | "THREE_MONTHS" | "SIX_MONTHS" | "ONE_YEAR";
             /**
-             * @description Key-value object allowing you to store additional information.
-             * @example {
-             *       "key": "value"
-             *     }
+             * @description The offer code offer mode.
+             * @example PAY_AS_YOU_GO
+             * @enum {string}
              */
-            metadata?: Record<string, never>;
-            rewards: {
-                sender: components["schemas"]["ReferralProgramSenderRewards"];
-                receiver: components["schemas"]["ReferralProgramReceiverRewards"];
-            };
+            offer_mode: "PAY_AS_YOU_GO" | "PAY_UP_FRONT" | "FREE_TRIAL";
+            /**
+             * @description The offer code number of periods.
+             * @example 1
+             */
+            number_of_periods: number;
+            /** @description The offer code prices. */
+            prices: components["schemas"]["AppStorePrice"][] | null;
         };
-        ReferralProgramSenderRewards: {
-            basic: {
-                /** @example {
-                 *       "variant": "claim",
-                 *       "amount": 1
-                 *     } */
-                activationConfiguration: {
-                    /** @enum {string} */
-                    variant: "claim" | "conversion";
-                    amount: number;
-                };
-                /** @example {
-                 *       "variant": "never"
-                 *     } */
-                deactivationConfiguration: {
-                    /** @constant */
-                    variant: "never";
-                } | {
-                    /** @constant */
-                    variant: "interval";
-                    duration: number;
-                    /** @enum {string} */
-                    period: "days" | "months" | "years";
-                };
-            } & components["schemas"]["ReferralBasicReward"];
-            credit: {
-                /**
-                 * @description Limit of how many times the reward can be granted to the same referral user. Zero means that the reward can be activated unlimited amount of times.
-                 * @example 0
-                 */
-                limit: number;
-                /** @example {
-                 *       "variant": "claim",
-                 *       "amount": 1
-                 *     } */
-                activationConfiguration: {
-                    /** @enum {string} */
-                    variant: "claim" | "conversion";
-                    amount: number;
-                };
-                /** @example {
-                 *       "variant": "never"
-                 *     } */
-                deactivationConfiguration: {
-                    /** @constant */
-                    variant: "never";
-                } | {
-                    /** @constant */
-                    variant: "interval";
-                    duration: number;
-                    /** @enum {string} */
-                    period: "days" | "months" | "years";
-                };
-            } & components["schemas"]["ReferralCreditReward"];
-        };
-        ReferralBasicReward: {
+        /** @description The subscription on the App Store */
+        AppStoreSubscription: {
             /**
-             * @description The referral reward key.
-             * @example extended-premium-trial
+             * @description The subscription id.
+             * @example 1234567890
              */
-            key: string;
+            id: string;
             /**
-             * @description The referral reward name.
-             * @example Extended Premium Trial
+             * @description The product id.
+             * @example com.winwinkit.app.yearly
+             */
+            product_id: string;
+            /**
+             * @description The subscription name.
+             * @example Yearly
              */
             name: string;
             /**
-             * @description The referral reward description.
-             * @example Extend Premium trial for 14 more days.
+             * @description The subscription period.
+             * @example ONE_YEAR
+             * @enum {string}
              */
-            description: string | null;
+            subscription_period: "ONE_WEEK" | "ONE_MONTH" | "TWO_MONTHS" | "THREE_MONTHS" | "SIX_MONTHS" | "ONE_YEAR";
+            /** @description The prices of the subscription. */
+            prices: components["schemas"]["AppStorePrice"][];
+        };
+        OfferCodeResponse: {
+            /** @description The offer code */
+            offerCode: components["schemas"]["AppStoreOfferCode"];
+            /** @description The subscription */
+            subscription: components["schemas"]["AppStoreSubscription"];
+        };
+        OfferCodeDataResponse: {
+            data: components["schemas"]["OfferCodeResponse"];
+        };
+        UserCreateRequest: {
             /**
-             * @description Key-value object storing additional information. Configurable via the dashboard.
-             * @example {
-             *       "key": "value"
-             *     }
+             * @description The unique identifier of the referral user in your app.
+             * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
+             */
+            app_user_id: string;
+            /**
+             * @description Whether the user is a premium user.
+             * @example false
+             */
+            is_premium?: boolean | null;
+            /**
+             * Format: date-time
+             * @description The date when the user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            first_seen_at?: string | null;
+            /**
+             * Format: date-time
+             * @description The date when the user was last seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            last_seen_at?: string | null;
+            /**
+             * @description The metadata of the user.
+             * @example {}
              */
             metadata?: Record<string, never>;
         };
-        ReferralCreditReward: {
-            /**
-             * @description The referral reward key.
-             * @example credits-level-one
-             */
-            key: string;
-            /**
-             * @description The amount of credits remaining with the reward.
-             * @example 100
-             */
-            credits: number;
-            /**
-             * @description The referral reward name.
-             * @example Level one
-             */
-            name: string;
-            /**
-             * @description The referral reward description.
-             * @example Grant credits for completing 100 levels.
-             */
-            description: string | null;
-            /**
-             * @description Key-value object storing additional information. Configurable via the dashboard.
-             * @example {
-             *       "key": "value"
-             *     }
-             */
-            metadata?: Record<string, never>;
-        };
-        ReferralProgramReceiverRewards: {
-            basic: {
-                /** @example {
-                 *       "variant": "claim"
-                 *     } */
-                activationConfiguration: {
-                    /** @enum {string} */
-                    variant: "claim" | "conversion";
-                };
-                /** @example {
-                 *       "variant": "never"
-                 *     } */
-                deactivationConfiguration: {
-                    /** @constant */
-                    variant: "never";
-                } | {
-                    /** @constant */
-                    variant: "interval";
-                    duration: number;
-                    /** @enum {string} */
-                    period: "days" | "months" | "years";
-                };
-            } & components["schemas"]["ReferralBasicReward"];
-            credit: {
-                /** @example {
-                 *       "variant": "claim"
-                 *     } */
-                activationConfiguration: {
-                    /** @enum {string} */
-                    variant: "claim" | "conversion";
-                };
-                /** @example {
-                 *       "variant": "never"
-                 *     } */
-                deactivationConfiguration: {
-                    /** @constant */
-                    variant: "never";
-                } | {
-                    /** @constant */
-                    variant: "interval";
-                    duration: number;
-                    /** @enum {string} */
-                    period: "days" | "months" | "years";
-                };
-            } & components["schemas"]["ReferralCreditReward"];
-        };
-        /** @description Referral user's eligibility to claim referral code. */
-        ReferralUserClaimCodeEligibilitySchema: {
+        /** @description User's eligibility to claim referral code. */
+        UserClaimCodeEligibility: {
             /**
              * @description The claim code eligibility flag.
              * @example true
              */
             eligible: boolean;
             /**
+             * Format: date-time
              * @description The claim code eligibility until date.
-             * @example 2025-02-10T10:28:18.104Z
+             * @example 2024-11-10T10:28:18.104Z
              */
             eligible_until: string | null;
         };
-        /** @description Referral user's rewards. */
-        ReferralUserRewards: {
-            /** @description Active referral user's rewards. */
-            active: {
-                basic: components["schemas"]["ReferralUserActiveBasicReward"][];
-                credit: components["schemas"]["ReferralUserActiveCreditReward"][];
-            };
-            /** @description Expired referral user's rewards. */
-            expired: {
-                basic: components["schemas"]["ReferralUserExpiredBasicReward"][];
-                credit: components["schemas"]["ReferralUserExpiredCreditReward"][];
-            };
-        };
-        ReferralUserActiveBasicReward: {
+        /** @description The stats of the user. */
+        UserStats: {
             /**
-             * @description Date when the referral reward expires.
-             * @example null
-             */
-            expires_at?: string | null;
-            /**
-             * @description Date when the referral reward created.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            created_at: string;
-        } & components["schemas"]["ReferralBasicReward"];
-        ReferralUserActiveCreditReward: {
-            /**
-             * @description Date when the referral reward expires.
-             * @example null
-             */
-            expires_at?: string | null;
-            /**
-             * @description Date when the referral reward created.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            created_at: string;
-        } & components["schemas"]["ReferralCreditReward"];
-        ReferralUserExpiredBasicReward: {
-            /**
-             * @description Date when the referral reward expired.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            expired_at: string;
-            /**
-             * @description Date when the referral reward created.
-             * @example 2024-11-10T10:28:18.104Z
-             */
-            created_at: string;
-        } & components["schemas"]["ReferralBasicReward"];
-        ReferralUserExpiredCreditReward: {
-            /**
-             * @description Date when the referral reward expired.
-             * @example 2025-02-10T10:28:18.104Z
-             */
-            expired_at: string;
-            /**
-             * @description Date when the referral reward created.
-             * @example 2024-11-10T10:28:18.104Z
-             */
-            created_at: string;
-        } & components["schemas"]["ReferralCreditReward"];
-        /** @description Referral user's statistics. */
-        ReferralUserStats: {
-            /**
-             * @description How many users claimed the referral code of this referral user.
-             * @example 10
+             * @description The number of users who have claimed the referral code.
+             * @example 0
              */
             claims: number;
             /**
-             * @description How many users who claimed the referral code of this referral used converted to premium. Requires you to update `is_premium` property of referral users.
-             * @example 8
+             * @description The number of users who have converted to premium.
+             * @example 0
              */
             conversions: number;
             /**
-             * @description How many users who claimed the referral code of this referral used converted to premium and then churned. Requires you to update `is_premium` property of referral users.
-             * @example 1
+             * @description The number of users who have churned.
+             * @example 0
              */
             churns: number;
         };
-        /** @description The error details that an API returns in the response body whenever the API request isn’t successful. */
-        ErrorResponse: {
-            /** @description An array of one or more errors. */
-            errors: components["schemas"]["Error"][];
-        };
-        /** @description The details about an error that is returned when an API request isn’t successful. */
-        Error: {
-            /** @description A machine-readable code indicating the type of error. This value is parseable for programmatic error handling in code. */
-            code: string;
-            /** @description The HTTP status code of the error. This status code usually matches the response’s status code; however, if the request produces multiple errors, these two codes may differ. */
-            status: number;
-            /** @description A summary of the error. Do not use this field for programmatic error handling. */
-            title: string;
-            /** @description Parameter that produced the error. */
-            source: string | null;
-        };
-        ClaimReferralCodeResponse: {
-            /** @description Data object containing the referral user and granted rewards objects. */
-            data: {
-                referral_user: components["schemas"]["ReferralUser"];
-                granted_rewards: components["schemas"]["GrantedRewards"];
-            };
-        };
-        ReferralUserWithdrawCreditReward: {
+        BasicReward: {
             /**
-             * @description The credits amount to withdraw.
-             * @example 10
+             * @description The key of the reward
+             * @example basic-reward
+             */
+            key: string;
+            /**
+             * @description The name of the reward
+             * @example Basic Reward
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is a basic reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserBasicRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["BasicReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        CreditReward: {
+            /**
+             * @description The key of the reward
+             * @example credit-reward
+             */
+            key: string;
+            /**
+             * @description The credits of the reward
+             * @example 100
              */
             credits: number;
-        };
-        WithdrawCreditsResponse: {
-            /** @description Data object containing the referral user and withdraw result objects. */
-            data: {
-                referral_user: components["schemas"]["ReferralUser"];
-                withdraw_result: components["schemas"]["WithdrawCredits"];
-            };
-        };
-        /** @description Withdraw credits result. */
-        WithdrawCredits: {
             /**
-             * @description Credits available at start.
+             * @description The name of the reward
+             * @example Credit Reward
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is a credit reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserCreditRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["CreditReward"];
+            /**
+             * @description The amount of the reward
+             * @example 100
+             */
+            credits: number;
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        OfferCodeReward: {
+            /**
+             * @description The key of the reward
+             * @example offer-code-reward
+             */
+            key: string;
+            /**
+             * @description The offer code id of the reward
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            offer_code_id: string;
+            /**
+             * @description The name of the reward
+             * @example Offer Code Reward
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is an offer code reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        OfferCodeValue: {
+            /**
+             * @description The offer code value
+             * @example ABCDEFGHIJKLMNOPQR
+             */
+            value: string;
+            /**
+             * @description The offer code redeem link
+             * @example https://apps.apple.com/redeem?ctx=offercodes&id=1234567890&code=ABCDEFGHIJKLMNOPQR
+             */
+            link: string;
+            /**
+             * Format: date-time
+             * @description The offer code value expiration date
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string;
+        };
+        UserOfferCodeRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["OfferCodeReward"];
+            /** @description The offer code value */
+            value: components["schemas"]["OfferCodeValue"] | null;
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserRewardsActive: {
+            /** @description The referral user basic rewards */
+            basic: components["schemas"]["UserBasicRewardActive"][];
+            /** @description The referral user credit rewards */
+            credit: components["schemas"]["UserCreditRewardActive"][];
+            /** @description The referral user offer code rewards */
+            offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+        };
+        UserBasicRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["BasicReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserCreditRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["CreditReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserOfferCodeRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["OfferCodeReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserRewardsExpired: {
+            /** @description The referral user basic rewards */
+            basic: components["schemas"]["UserBasicRewardExpired"][];
+            /** @description The referral user credit rewards */
+            credit: components["schemas"]["UserCreditRewardExpired"][];
+            /** @description The referral user offer code rewards */
+            offer_code: components["schemas"]["UserOfferCodeRewardExpired"][];
+        };
+        UserRewards: {
+            /** @description The referral user active rewards */
+            active: components["schemas"]["UserRewardsActive"];
+            /** @description The referral user expired rewards */
+            expired: components["schemas"]["UserRewardsExpired"];
+        };
+        ProgramSenderBasicRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramSenderBasicRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramSenderBasicRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The value of the activation configuration
+             * @example 1
+             */
+            value: number;
+        };
+        ProgramSenderBasicReward: {
+            /** @description The reward */
+            reward: components["schemas"]["BasicReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramSenderBasicRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramSenderBasicRewardNeverDeactivation"] | components["schemas"]["ProgramSenderBasicRewardIntervalDeactivation"];
+        };
+        ProgramSenderCreditRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramSenderCreditRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramSenderCreditRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The value of the activation configuration
+             * @example 1
+             */
+            value: number;
+            /**
+             * @description The limit of the activation configuration
+             * @example 1
+             */
+            limit: number;
+        };
+        ProgramSenderCreditReward: {
+            /** @description The reward */
+            reward: components["schemas"]["CreditReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramSenderCreditRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramSenderCreditRewardNeverDeactivation"] | components["schemas"]["ProgramSenderCreditRewardIntervalDeactivation"];
+        };
+        ProgramSenderOfferCodeRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramSenderOfferCodeRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramSenderOfferCodeRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The value of the activation configuration
+             * @example 1
+             */
+            value: number;
+            /**
+             * @description The limit of the activation configuration
+             * @example 1
+             */
+            limit: number;
+        };
+        ProgramSenderOfferCodeReward: {
+            /** @description The reward */
+            reward: components["schemas"]["OfferCodeReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramSenderOfferCodeRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramSenderOfferCodeRewardNeverDeactivation"] | components["schemas"]["ProgramSenderOfferCodeRewardIntervalDeactivation"];
+        };
+        ProgramSenderRewards: {
+            /** @description The program basic rewards */
+            basic: components["schemas"]["ProgramSenderBasicReward"][];
+            /** @description The program credit rewards */
+            credit: components["schemas"]["ProgramSenderCreditReward"][];
+            /** @description The program offer code rewards */
+            offer_code: components["schemas"]["ProgramSenderOfferCodeReward"][];
+        };
+        ProgramReceiverBasicRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramReceiverBasicRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramReceiverBasicRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+        };
+        ProgramReceiverBasicReward: {
+            /** @description The reward */
+            reward: components["schemas"]["BasicReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramReceiverBasicRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramReceiverBasicRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverBasicRewardIntervalDeactivation"];
+        };
+        ProgramReceiverCreditRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramReceiverCreditRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramReceiverCreditRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+        };
+        ProgramReceiverCreditReward: {
+            /** @description The reward */
+            reward: components["schemas"]["CreditReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramReceiverCreditRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramReceiverCreditRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverCreditRewardIntervalDeactivation"];
+        };
+        ProgramReceiverOfferCodeRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ProgramReceiverOfferCodeRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ProgramReceiverOfferCodeRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim";
+        };
+        ProgramReceiverOfferCodeReward: {
+            /** @description The reward */
+            reward: components["schemas"]["OfferCodeReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ProgramReceiverOfferCodeRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ProgramReceiverOfferCodeRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverOfferCodeRewardIntervalDeactivation"];
+        };
+        ProgramReceiverRewards: {
+            /** @description The program basic rewards */
+            basic: components["schemas"]["ProgramReceiverBasicReward"][];
+            /** @description The program credit rewards */
+            credit: components["schemas"]["ProgramReceiverCreditReward"][];
+            /** @description The program offer code rewards */
+            offer_code: components["schemas"]["ProgramReceiverOfferCodeReward"][];
+        };
+        ProgramRewards: {
+            /** @description The program sender rewards */
+            sender: components["schemas"]["ProgramSenderRewards"];
+            /** @description The program receiver rewards */
+            receiver: components["schemas"]["ProgramReceiverRewards"];
+        };
+        Program: {
+            /**
+             * @description The program id
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            id: string;
+            /**
+             * @description The program name
+             * @example Referral Program #1
+             */
+            name: string;
+            /**
+             * @description The program description
+             * @example This is a referral program
+             */
+            description: string | null;
+            /**
+             * @description The program metadata
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * @description The program distribution percentage
+             * @example 100
+             */
+            distribution_percentage: number;
+            /**
+             * @description The program limit
+             * @example 0
+             */
+            limit: number;
+            /** @description The program rewards */
+            rewards: components["schemas"]["ProgramRewards"];
+            /**
+             * Format: date-time
+             * @description The program created at
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The program updated at
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        User: {
+            /**
+             * @description The unique identifier of the user in your app.
+             * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
+             */
+            app_user_id: string;
+            /**
+             * @description The referral code of the user.
+             * @example XYZ123
+             */
+            code: string | null;
+            /**
+             * @description The preview link of the user.
+             * @example https://appname.wwk.link/XYZ123
+             */
+            preview_link: string | null;
+            /**
+             * @description Whether the user is a premium user.
+             * @example false
+             */
+            is_premium: boolean | null;
+            /**
+             * Format: date-time
+             * @description The date when the user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            first_seen_at: string | null;
+            /**
+             * Format: date-time
+             * @description The date when the user was last seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            last_seen_at: string | null;
+            /**
+             * @description The metadata of the user.
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /** @description The claim code eligibility of the user. */
+            claim_code_eligibility: components["schemas"]["UserClaimCodeEligibility"];
+            /** @description The stats of the user. */
+            stats: components["schemas"]["UserStats"];
+            /** @description The rewards of the user. */
+            rewards: components["schemas"]["UserRewards"];
+            /** @description The program of the user. */
+            program: components["schemas"]["Program"] | null;
+        };
+        UserResponse: {
+            /** @description The user */
+            user: components["schemas"]["User"];
+        };
+        UserDataResponse: {
+            data: components["schemas"]["UserResponse"];
+        };
+        UserWithdrawCreditsRequest: {
+            /**
+             * @description The key of the credit reward to withdraw
+             * @example credit-reward
+             */
+            key: string;
+            /**
+             * @description The amount of credits to withdraw
+             * @example 100
+             */
+            amount: number;
+        };
+        UserWithdrawCreditsResult: {
+            /**
+             * @description The amount of credits available at the start
              * @example 100
              */
             credits_available_at_start: number;
             /**
-             * @description Credits available at end.
+             * @description The amount of credits available at the end
              * @example 90
              */
             credits_available_at_end: number;
             /**
-             * @description Credits requested to withdraw.
+             * @description The amount of credits requested to withdraw
              * @example 10
              */
             credits_requested_to_withdraw: number;
             /**
-             * @description Credits actually withdrawn.
+             * @description The amount of credits withdrawn
              * @example 10
              */
             credits_withdrawn: number;
+        };
+        UserWithdrawCreditsResponse: {
+            /** @description The withdraw result */
+            withdraw_result: components["schemas"]["UserWithdrawCreditsResult"];
+            /** @description The user */
+            user: components["schemas"]["User"];
+        };
+        UserWithdrawCreditsDataResponse: {
+            data: components["schemas"]["UserWithdrawCreditsResponse"];
+        };
+        UserClaimReferralCodeRequest: {
+            /**
+             * @description The referral code to claim
+             * @example XYZ123
+             */
+            code: string;
+        };
+        UserRewardsGranted: {
+            /** @description The referral user basic rewards */
+            basic: components["schemas"]["UserBasicRewardActive"][];
+            /** @description The referral user credit rewards */
+            credit: components["schemas"]["UserCreditRewardActive"][];
+            /** @description The referral user offer code rewards */
+            offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+        };
+        UserClaimReferralCodeResponse: {
+            /** @description The granted rewards */
+            granted_rewards: components["schemas"]["UserRewardsGranted"];
+            /** @description The user */
+            user: components["schemas"]["User"];
+        };
+        UserClaimReferralCodeDataResponse: {
+            data: components["schemas"]["UserClaimReferralCodeResponse"];
         };
     };
     responses: never;
@@ -572,274 +1082,285 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    createReferralUser: {
+    AppStoreController_findOne: {
         parameters: {
             query?: never;
-            header?: never;
-            path?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": unknown;
+            };
+            path: {
+                /** @description The offer code id to retrieve. */
+                offer_code_id: string;
+            };
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ReferralUserCreate"];
-            };
-        };
+        requestBody?: never;
         responses: {
-            /** @description Referral user updated. */
+            /** @description Offer Code object. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUserResponse"];
+                    "application/json": components["schemas"]["OfferCodeDataResponse"];
                 };
             };
-            /** @description Referral user created. */
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The offer code has not been found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    UsersController_createOrUpdate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": unknown;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description The user has been successfully updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDataResponse"];
+                };
+            };
+            /** @description The user has been successfully created. */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUserResponse"];
+                    "application/json": components["schemas"]["UserDataResponse"];
                 };
             };
-            /** @description Bad Request. */
+            /** @description The request is invalid. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Unauthorized. */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Validation Error. */
+            /** @description The request is invalid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
         };
     };
-    getReferralUser: {
+    UsersController_fetch: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": unknown;
+            };
             path: {
-                /** @description The app user id of the referral user. */
+                /** @description The app user id of the user to retrieve. */
                 app_user_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The referral user. */
+            /** @description The user has been successfully retrieved. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUserResponse"];
+                    "application/json": components["schemas"]["UserDataResponse"];
                 };
             };
-            /** @description Unauthorized. */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Not Found. */
+            /** @description The user has not been found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
         };
     };
-    updateReferralUser: {
+    UsersRewardsController_withdrawCreditRewards: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": unknown;
+            };
             path: {
-                /** @description The app user id of the referral user. */
+                /** @description The app user id of the user to withdraw credits from. */
                 app_user_id: string;
             };
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
-                "application/json": components["schemas"]["ReferralUserUpdate"];
+                "application/json": components["schemas"]["UserWithdrawCreditsRequest"];
             };
         };
         responses: {
-            /** @description Referral user updated. */
+            /** @description The result of the withdrawal of credits */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReferralUserResponse"];
+                    "application/json": components["schemas"]["UserWithdrawCreditsDataResponse"];
                 };
             };
-            /** @description Bad Request. */
+            /** @description The request is invalid. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Unauthorized. */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Not Found. */
+            /** @description The user has not been found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Validation Error. */
+            /** @description The request is invalid. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
         };
     };
-    claimReferralUserCode: {
+    UsersClaimController_claimReferralCode: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": unknown;
+            };
             path: {
-                /** @description The app user id of the referral user. */
+                /** @description The app user id of the user to claim the referral code for. */
                 app_user_id: string;
-                /** @description The referral code to claim. */
-                code: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserClaimReferralCodeRequest"];
+            };
+        };
         responses: {
-            /** @description The referral user. */
+            /** @description The granted rewards */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ClaimReferralCodeResponse"];
+                    "application/json": components["schemas"]["UserClaimReferralCodeDataResponse"];
                 };
             };
-            /** @description Bad Request. */
+            /** @description The request is invalid. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Unauthorized. */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Not Found. */
+            /** @description The user has not been found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description Method Not Allowed. */
-            405: {
+            /** @description The request is invalid. */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    withdrawCreditReferralReward: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The app user id of the referral user. */
-                app_user_id: string;
-                /** @description The credit referral reward key. */
-                key: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ReferralUserWithdrawCreditReward"];
-            };
-        };
-        responses: {
-            /** @description The withdraw credits completed. Check data.withdraw_result object for details. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WithdrawCreditsResponse"];
-                };
-            };
-            /** @description Unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Not Found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
         };
