@@ -15,7 +15,7 @@ export interface paths {
          * Get Offer Code
          * @description Get an offer code with subscription and prices by the offer code id.
          */
-        get: operations["AppStoreController_findOne"];
+        get: operations["getOfferCode"];
         put?: never;
         post?: never;
         delete?: never;
@@ -34,10 +34,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Create User
-         * @description Create a user. Update the user if already exists.
+         * Create or Update User
+         * @description Create or update a user if already exists.
          */
-        post: operations["UsersController_createOrUpdate"];
+        post: operations["createOrUpdateUser"];
         delete?: never;
         options?: never;
         head?: never;
@@ -55,7 +55,7 @@ export interface paths {
          * Get User
          * @description Retrieves a user by their app user id.
          */
-        get: operations["UsersController_fetch"];
+        get: operations["getUser"];
         put?: never;
         post?: never;
         delete?: never;
@@ -77,7 +77,7 @@ export interface paths {
          * Withdraw Credits
          * @description Withdraws credits from a user.
          */
-        post: operations["UsersRewardsController_withdrawCreditRewards"];
+        post: operations["rewardsWithdraw"];
         delete?: never;
         options?: never;
         head?: never;
@@ -97,7 +97,7 @@ export interface paths {
          * Claim Referral Code
          * @description Claims a referral code for a user.
          */
-        post: operations["UsersClaimController_claimReferralCode"];
+        post: operations["claimReferralCode"];
         delete?: never;
         options?: never;
         head?: never;
@@ -109,15 +109,15 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @description Error Object */
-        Error: {
+        ErrorObject: {
             code: string;
             status: number;
             message: string;
-            source: Record<string, never>;
+            source: string | null;
         };
         /** @description Errors Response */
         ErrorsResponse: {
-            errors: components["schemas"]["Error"][];
+            errors: components["schemas"]["ErrorObject"][];
         };
         /** @description The price */
         AppStorePrice: {
@@ -1065,8 +1065,8 @@ export interface components {
             offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
         };
         UserClaimReferralCodeResponse: {
-            /** @description The granted rewards */
-            granted_rewards: components["schemas"]["UserRewardsGranted"];
+            /** @description The rewards granted to the user */
+            rewards_granted: components["schemas"]["UserRewardsGranted"];
             /** @description The user */
             user: components["schemas"]["User"];
         };
@@ -1082,12 +1082,12 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    AppStoreController_findOne: {
+    getOfferCode: {
         parameters: {
             query?: never;
             header: {
                 /** @description The API key to authenticate with. */
-                "x-api-key": unknown;
+                "x-api-key": string;
             };
             path: {
                 /** @description The offer code id to retrieve. */
@@ -1126,12 +1126,12 @@ export interface operations {
             };
         };
     };
-    UsersController_createOrUpdate: {
+    createOrUpdateUser: {
         parameters: {
             query?: never;
             header: {
                 /** @description The API key to authenticate with. */
-                "x-api-key": unknown;
+                "x-api-key": string;
             };
             path?: never;
             cookie?: never;
@@ -1189,12 +1189,12 @@ export interface operations {
             };
         };
     };
-    UsersController_fetch: {
+    getUser: {
         parameters: {
             query?: never;
             header: {
                 /** @description The API key to authenticate with. */
-                "x-api-key": unknown;
+                "x-api-key": string;
             };
             path: {
                 /** @description The app user id of the user to retrieve. */
@@ -1233,12 +1233,12 @@ export interface operations {
             };
         };
     };
-    UsersRewardsController_withdrawCreditRewards: {
+    rewardsWithdraw: {
         parameters: {
             query?: never;
             header: {
                 /** @description The API key to authenticate with. */
-                "x-api-key": unknown;
+                "x-api-key": string;
             };
             path: {
                 /** @description The app user id of the user to withdraw credits from. */
@@ -1299,12 +1299,12 @@ export interface operations {
             };
         };
     };
-    UsersClaimController_claimReferralCode: {
+    claimReferralCode: {
         parameters: {
             query?: never;
             header: {
                 /** @description The API key to authenticate with. */
-                "x-api-key": unknown;
+                "x-api-key": string;
             };
             path: {
                 /** @description The app user id of the user to claim the referral code for. */

@@ -84,7 +84,7 @@ export default class WinWinKit {
    */
   public async claimReferralCode({appUserId, code}: { appUserId: string, code: string }): Promise<{
     user: User,
-    grantedRewards: UserRewardsGranted
+    rewardsGranted: UserRewardsGranted
   }> {
     const client = this.createClient();
     const {data, error} = await client.POST('/users/{app_user_id}/claim/referral-code', {
@@ -98,7 +98,7 @@ export default class WinWinKit {
     });
     if (error)
       throw error;
-    return {user: data.data.user, grantedRewards: data.data.granted_rewards};
+    return {user: data.data.user, rewardsGranted: data.data.rewards_granted};
   }
 
   /**
@@ -150,7 +150,7 @@ export default class WinWinKit {
   }
 
   private createClient() {
-    return createClient<paths>({baseUrl: "https://api.winwinkit.com"})
+    return createClient<paths>({baseUrl: "https://api-v1.winwinkit.com"})
   }
 
   private createAuthHeader() {
