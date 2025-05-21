@@ -39,16 +39,39 @@ const wwk = new WinWinKit({
   apiKey: process.env['WINWINKIT_API_KEY'] ?? '',
 })
 
-// Create referral user.
-const referralUser = await wwk.createReferralUser({
+// Create or update user.
+const user = await wwk.createOrUpdateUser({
   appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c"
 })
 
 ...
 
-// Claim referral code.
-const { referralUser, grantedRewards } = await wwk.claimReferralCode({ 
+// Fetch user
+const user = await wwk.fetchUser({
+  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c"
+})
+
+...
+
+// Claim referral code
+const { user, rewardsGranted } = await wwk.claimReferralCode({ 
   appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c",
   code: "XYZ123"
+})
+
+...
+
+// Withdraw credits
+const { user, withdrawResult } = await wwk.withdrawCredits({ 
+  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c",
+  key: "key",
+  amount: 10
+})
+
+...
+
+// Fetch offer code
+const { offerCode, subscription } = await wwk.fetchOfferCode({ 
+  offerCodeId: "123e4567-e89b-12d3-a456-426614174000",
 })
 ```
