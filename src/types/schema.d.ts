@@ -606,10 +606,10 @@ export interface components {
              */
             variant: "claim" | "conversion";
             /**
-             * @description The value of the activation configuration
+             * @description The amount of the activation configuration
              * @example 1
              */
-            value: number;
+            amount: number;
         };
         ProgramSenderBasicReward: {
             /** @description The reward */
@@ -659,10 +659,10 @@ export interface components {
              */
             variant: "claim" | "conversion";
             /**
-             * @description The value of the activation configuration
+             * @description The amount of the activation configuration
              * @example 1
              */
-            value: number;
+            amount: number;
             /**
              * @description The limit of the activation configuration
              * @example 1
@@ -717,10 +717,10 @@ export interface components {
              */
             variant: "claim" | "conversion";
             /**
-             * @description The value of the activation configuration
+             * @description The amount of the activation configuration
              * @example 1
              */
-            value: number;
+            amount: number;
             /**
              * @description The limit of the activation configuration
              * @example 1
