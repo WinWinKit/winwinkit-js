@@ -77,7 +77,7 @@ export interface paths {
          * Withdraw Credits
          * @description Withdraws credits from a user.
          */
-        post: operations["rewardsWithdraw"];
+        post: operations["withdrawCredits"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1115,8 +1115,8 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorsResponse"];
                 };
             };
-            /** @description The offer code has not been found. */
-            404: {
+            /** @description Failed to fetch offer code because request to the App Store Connect API failed. */
+            424: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1233,7 +1233,7 @@ export interface operations {
             };
         };
     };
-    rewardsWithdraw: {
+    withdrawCredits: {
         parameters: {
             query?: never;
             header: {
