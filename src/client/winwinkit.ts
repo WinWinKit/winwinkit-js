@@ -25,7 +25,7 @@ export default class WinWinKit {
    * @param appUserId The app user id to fetch the user for.
    * @returns The user.
    */
-  public async user({appUserId}: {appUserId: string}): Promise<User | null> {
+  public async fetchUser({appUserId}: {appUserId: string}): Promise<User | null> {
     const client = this.createClient();
     const {data, error} = await client.GET('/users/{app_user_id}', {
       params: {
@@ -133,7 +133,7 @@ export default class WinWinKit {
    * @param offerCodeId The offer code id to fetch.
    * @returns The offer code and subscription.
    */
-  public async offerCode({offerCodeId}: {offerCodeId: string}): Promise<{
+  public async fetchOfferCode({offerCodeId}: {offerCodeId: string}): Promise<{
     offerCode: AppStoreOfferCode,
     subscription: AppStoreSubscription
   }> {
