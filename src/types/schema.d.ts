@@ -64,7 +64,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{app_user_id}/rewards/withdraw": {
+    "/users/{app_user_id}/rewards/withdraw-credits": {
         parameters: {
             query?: never;
             header?: never;

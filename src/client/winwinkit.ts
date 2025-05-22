@@ -113,7 +113,7 @@ export default class WinWinKit {
     withdrawResult: UserWithdrawCreditsResult
   }> {
     const client = this.createClient();
-    const {data, error} = await client.POST('/users/{app_user_id}/rewards/withdraw', {
+    const {data, error} = await client.POST('/users/{app_user_id}/rewards/withdraw-credits', {
       params: {
         path: {app_user_id: appUserId},
         header: this.createAuthHeader(),
