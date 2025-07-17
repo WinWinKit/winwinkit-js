@@ -77,17 +77,17 @@ export default class WinWinKit {
   }
 
   /**
-   * Claim a referral code.
+   * Claim a code.
    * @param appUserId The app user id to claim the code for.
    * @param code The code to claim.
    * @returns The updated user and granted rewards.
    */
-  public async claimReferralCode({appUserId, code}: { appUserId: string, code: string }): Promise<{
+  public async claimCode({appUserId, code}: { appUserId: string, code: string }): Promise<{
     user: User,
     rewardsGranted: UserRewardsGranted
   }> {
     const client = this.createClient();
-    const {data, error} = await client.POST('/users/{app_user_id}/claim/referral-code', {
+    const {data, error} = await client.POST('/users/{app_user_id}/claim-code', {
       params: {
         path: {app_user_id: appUserId},
         header: this.createAuthHeader(),

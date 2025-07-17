@@ -84,7 +84,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{app_user_id}/claim/referral-code": {
+    "/users/{app_user_id}/claim-code": {
         parameters: {
             query?: never;
             header?: never;
@@ -94,10 +94,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Claim Referral Code
-         * @description Claims a referral code for a user.
+         * Claim Code
+         * @description Claims a code for a user. Code can be affiliate, promo or referral code.
          */
-        post: operations["claimReferralCode"];
+        post: operations["claimCode"];
         delete?: never;
         options?: never;
         head?: never;
@@ -483,6 +483,138 @@ export interface components {
              */
             updated_at: string | null;
         };
+        RevenueCatEntitlementReward: {
+            /**
+             * @description The key of the reward
+             * @example premium-entitlement
+             */
+            key: string;
+            /**
+             * @description The entitlement ID of the reward
+             * @example entl1234567890
+             */
+            entitlement_id: string;
+            /**
+             * @description The entitlement key of the reward
+             * @example premium
+             */
+            entitlement_key: string;
+            /**
+             * @description The name of the reward
+             * @example Premium Access
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is an RevenueCat entitlement reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserRevenueCatEntitlementRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatEntitlementReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        RevenueCatOfferingReward: {
+            /**
+             * @description The key of the reward
+             * @example discounted-offering
+             */
+            key: string;
+            /**
+             * @description The offering ID of the reward
+             * @example ofrng1234567890
+             */
+            offering_id: string;
+            /**
+             * @description The offering key of the reward
+             * @example discounted
+             */
+            offering_key: string;
+            /**
+             * @description The name of the reward
+             * @example Discounted Offering
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is an RevenueCat offering reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserRevenueCatOfferingRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatOfferingReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
         UserRewardsActive: {
             /** @description The referral user basic rewards */
             basic: components["schemas"]["UserBasicRewardActive"][];
@@ -490,6 +622,10 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardActive"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+            /** @description The referral user RevenueCat entitlement rewards */
+            revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardActive"][];
+            /** @description The referral user RevenueCat offering rewards */
+            revenuecat_offering: components["schemas"]["UserRevenueCatOfferingRewardActive"][];
         };
         UserBasicRewardExpired: {
             /** @description The reward */
@@ -557,6 +693,50 @@ export interface components {
              */
             updated_at: string | null;
         };
+        UserRevenueCatEntitlementRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatEntitlementReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        UserRevenueCatOfferingRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatOfferingReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
         UserRewardsExpired: {
             /** @description The referral user basic rewards */
             basic: components["schemas"]["UserBasicRewardExpired"][];
@@ -564,6 +744,10 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardExpired"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardExpired"][];
+            /** @description The referral user RevenueCat entitlement rewards */
+            revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardExpired"][];
+            /** @description The referral user RevenueCat offering rewards */
+            revenuecat_offering: components["schemas"]["UserRevenueCatOfferingRewardExpired"][];
         };
         UserRewards: {
             /** @description The referral user active rewards */
@@ -571,7 +755,7 @@ export interface components {
             /** @description The referral user expired rewards */
             expired: components["schemas"]["UserRewardsExpired"];
         };
-        ProgramSenderBasicRewardNeverDeactivation: {
+        ReferralProgramSenderBasicRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -579,7 +763,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramSenderBasicRewardIntervalDeactivation: {
+        ReferralProgramSenderBasicRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -598,7 +782,7 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramSenderBasicRewardActivation: {
+        ReferralProgramSenderBasicRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -611,20 +795,20 @@ export interface components {
              */
             amount: number;
         };
-        ProgramSenderBasicReward: {
+        ReferralProgramSenderBasicReward: {
             /** @description The reward */
             reward: components["schemas"]["BasicReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramSenderBasicRewardActivation"];
+            activation: components["schemas"]["ReferralProgramSenderBasicRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramSenderBasicRewardNeverDeactivation"] | components["schemas"]["ProgramSenderBasicRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramSenderBasicRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderBasicRewardIntervalDeactivation"];
         };
-        ProgramSenderCreditRewardNeverDeactivation: {
+        ReferralProgramSenderCreditRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -632,7 +816,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramSenderCreditRewardIntervalDeactivation: {
+        ReferralProgramSenderCreditRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -651,7 +835,7 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramSenderCreditRewardActivation: {
+        ReferralProgramSenderCreditRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -669,20 +853,20 @@ export interface components {
              */
             limit: number;
         };
-        ProgramSenderCreditReward: {
+        ReferralProgramSenderCreditReward: {
             /** @description The reward */
             reward: components["schemas"]["CreditReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramSenderCreditRewardActivation"];
+            activation: components["schemas"]["ReferralProgramSenderCreditRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramSenderCreditRewardNeverDeactivation"] | components["schemas"]["ProgramSenderCreditRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramSenderCreditRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderCreditRewardIntervalDeactivation"];
         };
-        ProgramSenderOfferCodeRewardNeverDeactivation: {
+        ReferralProgramSenderOfferCodeRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -690,7 +874,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramSenderOfferCodeRewardIntervalDeactivation: {
+        ReferralProgramSenderOfferCodeRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -709,7 +893,7 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramSenderOfferCodeRewardActivation: {
+        ReferralProgramSenderOfferCodeRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -727,28 +911,20 @@ export interface components {
              */
             limit: number;
         };
-        ProgramSenderOfferCodeReward: {
+        ReferralProgramSenderOfferCodeReward: {
             /** @description The reward */
             reward: components["schemas"]["OfferCodeReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramSenderOfferCodeRewardActivation"];
+            activation: components["schemas"]["ReferralProgramSenderOfferCodeRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramSenderOfferCodeRewardNeverDeactivation"] | components["schemas"]["ProgramSenderOfferCodeRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramSenderOfferCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderOfferCodeRewardIntervalDeactivation"];
         };
-        ProgramSenderRewards: {
-            /** @description The program basic rewards */
-            basic: components["schemas"]["ProgramSenderBasicReward"][];
-            /** @description The program credit rewards */
-            credit: components["schemas"]["ProgramSenderCreditReward"][];
-            /** @description The program offer code rewards */
-            offer_code: components["schemas"]["ProgramSenderOfferCodeReward"][];
-        };
-        ProgramReceiverBasicRewardNeverDeactivation: {
+        ReferralProgramSenderRevenueCatEntitlementRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -756,7 +932,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramReceiverBasicRewardIntervalDeactivation: {
+        ReferralProgramSenderRevenueCatEntitlementRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -775,7 +951,125 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramReceiverBasicRewardActivation: {
+        ReferralProgramSenderRevenueCatEntitlementRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The amount of the activation configuration
+             * @example 1
+             */
+            amount: number;
+        };
+        ReferralProgramSenderRevenueCatEntitlementReward: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatEntitlementReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramSenderRevenueCatEntitlementRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramSenderRevenueCatEntitlementRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderRevenueCatEntitlementRewardIntervalDeactivation"];
+        };
+        ReferralProgramSenderRevenueCatOfferingRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramSenderRevenueCatOfferingRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramSenderRevenueCatOfferingRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The amount of the activation configuration
+             * @example 1
+             */
+            amount: number;
+        };
+        ReferralProgramSenderRevenueCatOfferingReward: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatOfferingReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramSenderRevenueCatOfferingRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramSenderRevenueCatOfferingRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderRevenueCatOfferingRewardIntervalDeactivation"];
+        };
+        ReferralProgramSenderRewards: {
+            /** @description The program basic rewards */
+            basic: components["schemas"]["ReferralProgramSenderBasicReward"][];
+            /** @description The program credit rewards */
+            credit: components["schemas"]["ReferralProgramSenderCreditReward"][];
+            /** @description The program offer code rewards */
+            offer_code: components["schemas"]["ReferralProgramSenderOfferCodeReward"][];
+            /** @description The program RevenueCat entitlement rewards */
+            revenuecat_entitlement: components["schemas"]["ReferralProgramSenderRevenueCatEntitlementReward"][];
+            /** @description The program RevenueCat offering rewards */
+            revenuecat_offering: components["schemas"]["ReferralProgramSenderRevenueCatOfferingReward"][];
+        };
+        ReferralProgramReceiverBasicRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramReceiverBasicRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramReceiverBasicRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -783,20 +1077,20 @@ export interface components {
              */
             variant: "claim" | "conversion";
         };
-        ProgramReceiverBasicReward: {
+        ReferralProgramReceiverBasicReward: {
             /** @description The reward */
             reward: components["schemas"]["BasicReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramReceiverBasicRewardActivation"];
+            activation: components["schemas"]["ReferralProgramReceiverBasicRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramReceiverBasicRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverBasicRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramReceiverBasicRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverBasicRewardIntervalDeactivation"];
         };
-        ProgramReceiverCreditRewardNeverDeactivation: {
+        ReferralProgramReceiverCreditRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -804,7 +1098,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramReceiverCreditRewardIntervalDeactivation: {
+        ReferralProgramReceiverCreditRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -823,7 +1117,7 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramReceiverCreditRewardActivation: {
+        ReferralProgramReceiverCreditRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -831,20 +1125,20 @@ export interface components {
              */
             variant: "claim" | "conversion";
         };
-        ProgramReceiverCreditReward: {
+        ReferralProgramReceiverCreditReward: {
             /** @description The reward */
             reward: components["schemas"]["CreditReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramReceiverCreditRewardActivation"];
+            activation: components["schemas"]["ReferralProgramReceiverCreditRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramReceiverCreditRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverCreditRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramReceiverCreditRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverCreditRewardIntervalDeactivation"];
         };
-        ProgramReceiverOfferCodeRewardNeverDeactivation: {
+        ReferralProgramReceiverOfferCodeRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example never
@@ -852,7 +1146,7 @@ export interface components {
              */
             variant: "never";
         };
-        ProgramReceiverOfferCodeRewardIntervalDeactivation: {
+        ReferralProgramReceiverOfferCodeRewardIntervalDeactivation: {
             /**
              * @description The variant of the deactivation configuration
              * @example interval
@@ -871,7 +1165,7 @@ export interface components {
              */
             period: "days" | "months" | "years";
         };
-        ProgramReceiverOfferCodeRewardActivation: {
+        ReferralProgramReceiverOfferCodeRewardActivation: {
             /**
              * @description The variant of the activation configuration
              * @example claim
@@ -879,34 +1173,134 @@ export interface components {
              */
             variant: "claim";
         };
-        ProgramReceiverOfferCodeReward: {
+        ReferralProgramReceiverOfferCodeReward: {
             /** @description The reward */
             reward: components["schemas"]["OfferCodeReward"];
             /** @description The activation configuration */
-            activation: components["schemas"]["ProgramReceiverOfferCodeRewardActivation"];
+            activation: components["schemas"]["ReferralProgramReceiverOfferCodeRewardActivation"];
             /**
              * @description The deactivation configuration
              * @example {
              *       "variant": "never"
              *     }
              */
-            deactivation: components["schemas"]["ProgramReceiverOfferCodeRewardNeverDeactivation"] | components["schemas"]["ProgramReceiverOfferCodeRewardIntervalDeactivation"];
+            deactivation: components["schemas"]["ReferralProgramReceiverOfferCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverOfferCodeRewardIntervalDeactivation"];
         };
-        ProgramReceiverRewards: {
+        ReferralProgramReceiverRevenueCatEntitlementRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramReceiverRevenueCatEntitlementRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramReceiverRevenueCatEntitlementRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+        };
+        ReferralProgramReceiverRevenueCatEntitlementReward: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatEntitlementReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramReceiverRevenueCatEntitlementRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramReceiverRevenueCatEntitlementRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverRevenueCatEntitlementRewardIntervalDeactivation"];
+        };
+        ReferralProgramReceiverRevenueCatOfferingRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramReceiverRevenueCatOfferingRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramReceiverRevenueCatOfferingRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim";
+        };
+        ReferralProgramReceiverRevenueCatOfferingReward: {
+            /** @description The reward */
+            reward: components["schemas"]["RevenueCatOfferingReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramReceiverRevenueCatOfferingRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramReceiverRevenueCatOfferingRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverRevenueCatOfferingRewardIntervalDeactivation"];
+        };
+        ReferralProgramReceiverRewards: {
             /** @description The program basic rewards */
-            basic: components["schemas"]["ProgramReceiverBasicReward"][];
+            basic: components["schemas"]["ReferralProgramReceiverBasicReward"][];
             /** @description The program credit rewards */
-            credit: components["schemas"]["ProgramReceiverCreditReward"][];
+            credit: components["schemas"]["ReferralProgramReceiverCreditReward"][];
             /** @description The program offer code rewards */
-            offer_code: components["schemas"]["ProgramReceiverOfferCodeReward"][];
+            offer_code: components["schemas"]["ReferralProgramReceiverOfferCodeReward"][];
+            /** @description The program RevenueCat entitlement rewards */
+            revenuecat_entitlement: components["schemas"]["ReferralProgramReceiverRevenueCatEntitlementReward"][];
+            /** @description The program RevenueCat offering rewards */
+            revenuecat_offering: components["schemas"]["ReferralProgramReceiverRevenueCatOfferingReward"][];
         };
-        ProgramRewards: {
+        ReferralProgramRewards: {
             /** @description The program sender rewards */
-            sender: components["schemas"]["ProgramSenderRewards"];
+            sender: components["schemas"]["ReferralProgramSenderRewards"];
             /** @description The program receiver rewards */
-            receiver: components["schemas"]["ProgramReceiverRewards"];
+            receiver: components["schemas"]["ReferralProgramReceiverRewards"];
         };
-        Program: {
+        ReferralProgram: {
             /**
              * @description The program id
              * @example 123e4567-e89b-12d3-a456-426614174000
@@ -938,7 +1332,7 @@ export interface components {
              */
             limit: number;
             /** @description The program rewards */
-            rewards: components["schemas"]["ProgramRewards"];
+            rewards: components["schemas"]["ReferralProgramRewards"];
             /**
              * Format: date-time
              * @description The program created at
@@ -962,12 +1356,12 @@ export interface components {
              * @description The referral code of the user.
              * @example XYZ123
              */
-            code: string | null;
+            referral_code: string | null;
             /**
-             * @description The preview link of the user.
+             * @description The referral code link of the user.
              * @example https://appname.wwk.link/XYZ123
              */
-            preview_link: string | null;
+            referral_code_link: string | null;
             /**
              * @description Whether the user is a premium user.
              * @example false
@@ -997,7 +1391,7 @@ export interface components {
             /** @description The rewards of the user. */
             rewards: components["schemas"]["UserRewards"];
             /** @description The program of the user. */
-            program: components["schemas"]["Program"] | null;
+            referral_program: components["schemas"]["ReferralProgram"] | null;
         };
         UserResponse: {
             /** @description The user */
@@ -1049,9 +1443,9 @@ export interface components {
         UserWithdrawCreditsDataResponse: {
             data: components["schemas"]["UserWithdrawCreditsResponse"];
         };
-        UserClaimReferralCodeRequest: {
+        UserClaimCodeRequest: {
             /**
-             * @description The referral code to claim
+             * @description The code to claim. Can be affiliate, promo or referral code.
              * @example XYZ123
              */
             code: string;
@@ -1063,15 +1457,19 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardActive"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+            /** @description The referral user RevenueCat entitlement rewards */
+            revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardActive"][];
+            /** @description The referral user RevenueCat offering rewards */
+            revenuecat_offering: components["schemas"]["UserRevenueCatOfferingRewardActive"][];
         };
-        UserClaimReferralCodeResponse: {
-            /** @description The rewards granted to the user */
+        UserClaimCodeResponse: {
+            /** @description The rewards granted to the user. */
             rewards_granted: components["schemas"]["UserRewardsGranted"];
-            /** @description The user */
+            /** @description The updated user. */
             user: components["schemas"]["User"];
         };
-        UserClaimReferralCodeDataResponse: {
-            data: components["schemas"]["UserClaimReferralCodeResponse"];
+        UserClaimCodeDataResponse: {
+            data: components["schemas"]["UserClaimCodeResponse"];
         };
     };
     responses: never;
@@ -1299,7 +1697,7 @@ export interface operations {
             };
         };
     };
-    claimReferralCode: {
+    claimCode: {
         parameters: {
             query?: never;
             header: {
@@ -1307,24 +1705,24 @@ export interface operations {
                 "x-api-key": string;
             };
             path: {
-                /** @description The app user id of the user to claim the referral code for. */
+                /** @description The app user id of the user to claim the code for. */
                 app_user_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserClaimReferralCodeRequest"];
+                "application/json": components["schemas"]["UserClaimCodeRequest"];
             };
         };
         responses: {
-            /** @description The granted rewards */
+            /** @description Updated user and granted rewards. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserClaimReferralCodeDataResponse"];
+                    "application/json": components["schemas"]["UserClaimCodeDataResponse"];
                 };
             };
             /** @description The request is invalid. */

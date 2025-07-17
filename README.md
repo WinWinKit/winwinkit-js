@@ -1,77 +1,13 @@
-# @winwinkit/sdk
+# Referrals & Affiliates for React Native and Expo apps.
 
-## SDK Installation
+The official [WinWinKit](https://winwinkit.com) SDK for JavaScript runtimes.
 
-The SDK can be installed with either [npm](https://www.npmjs.com/), [pnpm](https://pnpm.io/), [bun](https://bun.sh/) or [yarn](https://classic.yarnpkg.com/en/) package managers.
+## Getting Started
 
-### NPM
+Please follow the [Swift SDK](https://docs.winwinkit.com/integrations/typescript-sdk) guide for information on how to install the SDK.
 
-```bash
-npm add @winwinkit/sdk
-```
+Our complete documentation with [Quickstart](https://docs.winwinkit.com/quickstart) guide, [API Reference](https://docs.winwinkit.com/api-reference) and feature guides is available at [docs.winwinkit.com](https://docs.winwinkit.com).
 
-### PNPM
+## SDK Reference
 
-```bash
-pnpm add @winwinkit/sdk
-```
-
-### Bun
-
-```bash
-bun add @winwinkit/sdk
-```
-
-### Yarn
-
-```bash
-yarn add @winwinkit/sdk
-```
-
-## SDK Example Usage
-
-### Example
-
-```typescript
-import { WinWinKit } from 'winwinkit'
-
-const wwk = new WinWinKit({
-  apiKey: process.env['WINWINKIT_API_KEY'] ?? '',
-})
-
-// Create or update user.
-const user = await wwk.createOrUpdateUser({
-  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c"
-})
-
-...
-
-// Fetch user
-const user = await wwk.fetchUser({
-  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c"
-})
-
-...
-
-// Claim referral code
-const { user, rewardsGranted } = await wwk.claimReferralCode({ 
-  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c",
-  code: "XYZ123"
-})
-
-...
-
-// Withdraw credits
-const { user, withdrawResult } = await wwk.withdrawCredits({ 
-  appUserId: "821fae4b5-1a2d-4c1e-9152-5297086a161c",
-  key: "key",
-  amount: 10
-})
-
-...
-
-// Fetch offer code
-const { offerCode, subscription } = await wwk.fetchOfferCode({ 
-  offerCodeId: "123e4567-e89b-12d3-a456-426614174000",
-})
-```
+Our full SDK reference _coming soon_.
