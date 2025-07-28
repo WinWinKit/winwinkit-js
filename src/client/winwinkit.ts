@@ -146,7 +146,7 @@ export default class WinWinKit {
     });
     if (error)
       throw error;
-    return {offerCode: data.data.offerCode, subscription: data.data.subscription};
+    return {offerCode: data.data.offer_code, subscription: data.data.subscription};
   }
 
   private createClient() {

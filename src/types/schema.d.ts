@@ -210,14 +210,14 @@ export interface components {
             /** @description The prices of the subscription. */
             prices: components["schemas"]["AppStorePrice"][];
         };
-        OfferCodeResponse: {
+        OfferCodeResponseData: {
             /** @description The offer code */
-            offerCode: components["schemas"]["AppStoreOfferCode"];
+            offer_code: components["schemas"]["AppStoreOfferCode"];
             /** @description The subscription */
             subscription: components["schemas"]["AppStoreSubscription"];
         };
-        OfferCodeDataResponse: {
-            data: components["schemas"]["OfferCodeResponse"];
+        OfferCodeResponse: {
+            data: components["schemas"]["OfferCodeResponseData"];
         };
         UserCreateRequest: {
             /**
@@ -1393,12 +1393,12 @@ export interface components {
             /** @description The program of the user. */
             referral_program: components["schemas"]["ReferralProgram"] | null;
         };
-        UserResponse: {
+        UserResponseData: {
             /** @description The user */
             user: components["schemas"]["User"];
         };
-        UserDataResponse: {
-            data: components["schemas"]["UserResponse"];
+        UserResponse: {
+            data: components["schemas"]["UserResponseData"];
         };
         UserWithdrawCreditsRequest: {
             /**
@@ -1434,14 +1434,14 @@ export interface components {
              */
             credits_withdrawn: number;
         };
-        UserWithdrawCreditsResponse: {
+        UserWithdrawCreditsResponseData: {
             /** @description The withdraw result */
             withdraw_result: components["schemas"]["UserWithdrawCreditsResult"];
             /** @description The user */
             user: components["schemas"]["User"];
         };
-        UserWithdrawCreditsDataResponse: {
-            data: components["schemas"]["UserWithdrawCreditsResponse"];
+        UserWithdrawCreditsResponse: {
+            data: components["schemas"]["UserWithdrawCreditsResponseData"];
         };
         UserClaimCodeRequest: {
             /**
@@ -1462,14 +1462,14 @@ export interface components {
             /** @description The referral user RevenueCat offering rewards */
             revenuecat_offering: components["schemas"]["UserRevenueCatOfferingRewardActive"][];
         };
-        UserClaimCodeResponse: {
+        UserClaimCodeResponseData: {
             /** @description The rewards granted to the user. */
             rewards_granted: components["schemas"]["UserRewardsGranted"];
             /** @description The updated user. */
             user: components["schemas"]["User"];
         };
-        UserClaimCodeDataResponse: {
-            data: components["schemas"]["UserClaimCodeResponse"];
+        UserClaimCodeResponse: {
+            data: components["schemas"]["UserClaimCodeResponseData"];
         };
     };
     responses: never;
@@ -1495,13 +1495,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Offer Code object. */
+            /** @description Offer Code response. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OfferCodeDataResponse"];
+                    "application/json": components["schemas"]["OfferCodeResponse"];
                 };
             };
             /** @description Unauthorized */
@@ -1546,7 +1546,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserDataResponse"];
+                    "application/json": components["schemas"]["UserResponse"];
                 };
             };
             /** @description The user has been successfully created. */
@@ -1555,7 +1555,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserDataResponse"];
+                    "application/json": components["schemas"]["UserResponse"];
                 };
             };
             /** @description The request is invalid. */
@@ -1608,7 +1608,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserDataResponse"];
+                    "application/json": components["schemas"]["UserResponse"];
                 };
             };
             /** @description Unauthorized */
@@ -1656,7 +1656,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserWithdrawCreditsDataResponse"];
+                    "application/json": components["schemas"]["UserWithdrawCreditsResponse"];
                 };
             };
             /** @description The request is invalid. */
@@ -1722,7 +1722,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserClaimCodeDataResponse"];
+                    "application/json": components["schemas"]["UserClaimCodeResponse"];
                 };
             };
             /** @description The request is invalid. */
