@@ -4,8 +4,15 @@
       {
         "type": "shell",
         "label": "Generate OpenAPI",
-        "detail": "openapi.generate",
+        "detail": "npx openapi-typescript",
         "command": "npx openapi-typescript ./src/openapi.yaml -o ./src/types/schema.d.ts",
+        "group": "build"
+      },
+      {
+        "type": "shell",
+        "label": "Publish",
+        "detail": "npm run publish",
+        "command": "npm run publish",
         "group": "build"
       }
     ]
