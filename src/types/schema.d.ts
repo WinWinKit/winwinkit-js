@@ -238,8 +238,9 @@ export interface components {
             first_seen_at?: string | null;
             /**
              * Format: date-time
-             * @description The date when the user was last seen at.
-             * @example 2024-11-10T10:28:18.104Z
+             * @deprecated
+             * @description The date when the user was last seen at. Deprecated and will be removed in the future.
+             * @example null
              */
             last_seen_at?: string | null;
             /**
@@ -1375,8 +1376,9 @@ export interface components {
             first_seen_at: string | null;
             /**
              * Format: date-time
-             * @description The date when the user was last seen at.
-             * @example 2024-11-10T10:28:18.104Z
+             * @deprecated
+             * @description The date when the user was last seen at. Deprecated, always returns null and will be removed in the future.
+             * @example null
              */
             last_seen_at: string | null;
             /**
