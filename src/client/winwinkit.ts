@@ -1,6 +1,13 @@
 import createClient from "openapi-fetch";
-import type {paths} from "../types/schema";
-import { UserRewardsGranted, User, UserWithdrawCreditsResult, AppStoreOfferCode, AppStoreSubscription } from "../types";
+import {
+  AppStoreOfferCode,
+  AppStoreSubscription,
+  ErrorObject,
+  User,
+  UserRewardsGranted,
+  UserWithdrawCreditsResult,
+} from "../types";
+import type { paths } from "../types/schema";
 
 /**
  * WinWinKit Client
@@ -12,34 +19,35 @@ export default class WinWinKit {
    * Construct a new WinWinKit instance.
    * @param apiKey The API key to configure the client with.
    */
-  constructor({
-    apiKey,
-  }: {
-    apiKey: string;
-  }) {
+  constructor({ apiKey }: { apiKey: string }) {
     this.apiKey = apiKey;
   }
 
-    /**
+  /**
    * Fetch a user.
    * @param appUserId The app user id to fetch the user for.
-   * @returns The user.
+   * @returns An object containing either the user or errors information.
    */
-  public async fetchUser({appUserId}: {appUserId: string}): Promise<User | null> {
+  public async fetchUser({
+    appUserId,
+  }: {
+    appUserId: string;
+  }): Promise<
+    { user: User | null; errors: null } | { user: null; errors: ErrorObject[] }
+  > {
     const client = this.createClient();
-    const {data, error} = await client.GET('/users/{app_user_id}', {
+    const { data, error } = await client.GET("/users/{app_user_id}", {
       params: {
-        path: {app_user_id: appUserId},
-        header: this.createAuthHeader()
-      }
+        path: { app_user_id: appUserId },
+        header: this.createAuthHeader(),
+      },
     });
     if (error) {
-      if (error.errors.pop()?.status === 404) {
-        return null;
-      }
-      throw error;
+      if (error.errors.pop()?.status === 404)
+        return { user: null, errors: null };
+      return { user: null, errors: error.errors };
     }
-    return data.data.user;
+    return { user: data.data.user, errors: null };
   }
 
   /**
@@ -49,19 +57,27 @@ export default class WinWinKit {
    * @param firstSeenAt The date and time the user was first seen. Optional.
    * @param lastSeenAt The date and time the user was last seen. Optional.
    * @param metadata The metadata of the user. Optional.
-   * @returns The created or updated user.
+   * @returns An object containing either the created/updated user or errors information.
    */
-  public async createOrUpdateUser({ appUserId, isPremium, firstSeenAt, lastSeenAt, metadata }: {
-    appUserId: string,
-    isPremium?: boolean,
-    firstSeenAt?: Date,
-    lastSeenAt?: Date,
-    metadata?: Record<string, never>
-  }): Promise<User> {
+  public async createOrUpdateUser({
+    appUserId,
+    isPremium,
+    firstSeenAt,
+    lastSeenAt,
+    metadata,
+  }: {
+    appUserId: string;
+    isPremium?: boolean;
+    firstSeenAt?: Date;
+    lastSeenAt?: Date;
+    metadata?: Record<string, never>;
+  }): Promise<
+    { user: User; errors: null } | { user: null; errors: ErrorObject[] }
+  > {
     const client = this.createClient();
-    const {data, error} = await client.POST('/users', {
+    const { data, error } = await client.POST("/users", {
       params: {
-      header: this.createAuthHeader(),
+        header: this.createAuthHeader(),
       },
       body: {
         app_user_id: appUserId,
@@ -71,34 +87,54 @@ export default class WinWinKit {
         metadata,
       },
     });
-    if (error)
-      throw error;
-    return data.data.user;
+    if (error) return { user: null, errors: error.errors };
+    return { user: data.data.user, errors: null };
   }
 
   /**
    * Claim a code.
    * @param appUserId The app user id to claim the code for.
    * @param code The code to claim.
-   * @returns The updated user and granted rewards.
+   * @returns An object containing either the updated user and granted rewards, or errors information.
    */
-  public async claimCode({appUserId, code}: { appUserId: string, code: string }): Promise<{
-    user: User,
-    rewardsGranted: UserRewardsGranted
-  }> {
+  public async claimCode({
+    appUserId,
+    code,
+  }: {
+    appUserId: string;
+    code: string;
+  }): Promise<
+    | {
+        user: User;
+        rewardsGranted: UserRewardsGranted;
+        errors: null;
+      }
+    | {
+        user: null;
+        rewardsGranted: null;
+        errors: ErrorObject[];
+      }
+  > {
     const client = this.createClient();
-    const {data, error} = await client.POST('/users/{app_user_id}/claim-code', {
-      params: {
-        path: {app_user_id: appUserId},
-        header: this.createAuthHeader(),
+    const { data, error } = await client.POST(
+      "/users/{app_user_id}/claim-code",
+      {
+        params: {
+          path: { app_user_id: appUserId },
+          header: this.createAuthHeader(),
+        },
+        body: {
+          code: code,
+        },
       },
-      body: {
-        code: code,
-      },
-    });
+    );
     if (error)
-      throw error;
-    return {user: data.data.user, rewardsGranted: data.data.rewards_granted};
+      return { user: null, rewardsGranted: null, errors: error.errors };
+    return {
+      user: data.data.user,
+      rewardsGranted: data.data.rewards_granted,
+      errors: null,
+    };
   }
 
   /**
@@ -106,47 +142,85 @@ export default class WinWinKit {
    * @param appUserId The app user id to withdraw the credits for.
    * @param key The key of the reward to withdraw.
    * @param amount The amount to withdraw.
-   * @returns The updated user and withdraw result.
+   * @returns An object containing either the updated user and withdrawal result, or errors information.
    */
-  public async withdrawCredits({appUserId, key, amount}: { appUserId: string, key: string, amount: number }): Promise<{
-    user: User,
-    withdrawResult: UserWithdrawCreditsResult
-  }> {
+  public async withdrawCredits({
+    appUserId,
+    key,
+    amount,
+  }: {
+    appUserId: string;
+    key: string;
+    amount: number;
+  }): Promise<
+    | {
+        user: User;
+        withdrawResult: UserWithdrawCreditsResult;
+        errors: null;
+      }
+    | { user: null; withdrawResult: null; errors: ErrorObject[] }
+  > {
     const client = this.createClient();
-    const {data, error} = await client.POST('/users/{app_user_id}/rewards/withdraw-credits', {
-      params: {
-        path: {app_user_id: appUserId},
-        header: this.createAuthHeader(),
+    const { data, error } = await client.POST(
+      "/users/{app_user_id}/rewards/withdraw-credits",
+      {
+        params: {
+          path: { app_user_id: appUserId },
+          header: this.createAuthHeader(),
+        },
+        body: {
+          key: key,
+          amount: amount,
+        },
       },
-      body: {
-        key: key,
-        amount: amount,
-      },
-    });
+    );
     if (error)
-      throw error;
-    return {user: data.data.user, withdrawResult: data.data.withdraw_result};
+      return { user: null, withdrawResult: null, errors: error.errors };
+    return {
+      user: data.data.user,
+      withdrawResult: data.data.withdraw_result,
+      errors: null,
+    };
   }
 
   /**
    * Fetch an offer code and subscription from the App Store.
    * @param offerCodeId The offer code id to fetch.
-   * @returns The offer code and subscription.
+   * @returns An object containing either the App Store offer code and subscription, or errors information.
    */
-  public async fetchOfferCode({offerCodeId}: {offerCodeId: string}): Promise<{
-    offerCode: AppStoreOfferCode,
-    subscription: AppStoreSubscription
-  }> {
+  public async fetchOfferCode({
+    offerCodeId,
+  }: {
+    offerCodeId: string;
+  }): Promise<
+    | {
+        offerCode: AppStoreOfferCode;
+        subscription: AppStoreSubscription;
+        errors: null;
+      }
+    | { offerCode: null; subscription: null; errors: ErrorObject[] }
+  > {
     const client = this.createClient();
-    const {data, error} = await client.GET('/app-store/offer-codes/{offer_code_id}', {
-      params: {
-        path: {offer_code_id: offerCodeId},
-        header: this.createAuthHeader(),
+    const { data, error } = await client.GET(
+      "/app-store/offer-codes/{offer_code_id}",
+      {
+        params: {
+          path: { offer_code_id: offerCodeId },
+          header: this.createAuthHeader(),
+        },
       },
-    });
+    );
     if (error)
-      throw error;
-    return {offerCode: data.data.offer_code, subscription: data.data.subscription};
+      return {
+        offerCode: null,
+        subscription: null,
+        errors: error.errors,
+      };
+    return {
+      offerCode: data.data.offer_code,
+      subscription: data.data.subscription,
+      errors: null,
+    };
   }
 
   private createClient() {
@@ -155,7 +229,7 @@ export default class WinWinKit {
 
   private createAuthHeader() {
     return {
-      'x-api-key': this.apiKey,
-    }
+      "x-api-key": this.apiKey,
+    };
   }
 }
