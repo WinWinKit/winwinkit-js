@@ -410,10 +410,20 @@ export interface components {
              */
             key: string;
             /**
-             * @description The offer code id of the reward
+             * @description The offer code id
              * @example 123e4567-e89b-12d3-a456-426614174000
              */
             offer_code_id: string;
+            /**
+             * @description The offer code reference name that is set in the App Store Connect
+             * @example Free Month
+             */
+            offer_code_ref_name: string;
+            /**
+             * @description The subscription product id of the offer code
+             * @example com.winwinkit.monthly
+             */
+            subscription_product_id: string;
             /**
              * @description The name of the reward
              * @example Offer Code Reward
@@ -465,6 +475,77 @@ export interface components {
             reward: components["schemas"]["OfferCodeReward"];
             /** @description The offer code value */
             value: components["schemas"]["OfferCodeValue"] | null;
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string | null;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        GooglePlayPromoCodeReward: {
+            /**
+             * @description The key of the reward
+             * @example promo-code-reward
+             */
+            key: string;
+            /**
+             * @description The name of the reward
+             * @example Promo Code Reward
+             */
+            name: string;
+            /**
+             * @description The description of the reward
+             * @example This is a promo code reward
+             */
+            description: string | null;
+            /**
+             * @description The metadata of the reward
+             * @example {}
+             */
+            metadata: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
+        GooglePlayPromoCodeValue: {
+            /**
+             * @description The promo code value
+             * @example ABCDEFGHIJKLMNOPQR
+             */
+            value: string;
+            /**
+             * Format: date-time
+             * @description The promo code value expiration date
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expires_at: string;
+        };
+        UserGooglePlayPromoCodeRewardActive: {
+            /** @description The reward */
+            reward: components["schemas"]["GooglePlayPromoCodeReward"];
+            /** @description The promo code value */
+            value: components["schemas"]["GooglePlayPromoCodeValue"] | null;
             /**
              * Format: date-time
              * @description The expiration date of the reward
@@ -623,6 +704,8 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardActive"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+            /** @description The referral user Google Play promo code rewards */
+            googleplay_promo_code: components["schemas"]["UserGooglePlayPromoCodeRewardActive"][];
             /** @description The referral user RevenueCat entitlement rewards */
             revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardActive"][];
             /** @description The referral user RevenueCat offering rewards */
@@ -694,6 +777,28 @@ export interface components {
              */
             updated_at: string | null;
         };
+        UserGooglePlayPromoCodeRewardExpired: {
+            /** @description The reward */
+            reward: components["schemas"]["GooglePlayPromoCodeReward"];
+            /**
+             * Format: date-time
+             * @description The expiration date of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            expired_at: string;
+            /**
+             * Format: date-time
+             * @description The created at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description The updated at of the reward
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updated_at: string | null;
+        };
         UserRevenueCatEntitlementRewardExpired: {
             /** @description The reward */
             reward: components["schemas"]["RevenueCatEntitlementReward"];
@@ -745,6 +850,8 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardExpired"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardExpired"][];
+            /** @description The referral user Google Play promo code rewards */
+            googleplay_promo_code: components["schemas"]["UserGooglePlayPromoCodeRewardExpired"][];
             /** @description The referral user RevenueCat entitlement rewards */
             revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardExpired"][];
             /** @description The referral user RevenueCat offering rewards */
@@ -925,6 +1032,64 @@ export interface components {
              */
             deactivation: components["schemas"]["ReferralProgramSenderOfferCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderOfferCodeRewardIntervalDeactivation"];
         };
+        ReferralProgramSenderGooglePlayPromoCodeRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramSenderGooglePlayPromoCodeRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramSenderGooglePlayPromoCodeRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim" | "conversion";
+            /**
+             * @description The amount of the activation configuration
+             * @example 1
+             */
+            amount: number;
+            /**
+             * @description The limit of the activation configuration
+             * @example 1
+             */
+            limit: number;
+        };
+        ReferralProgramSenderGooglePlayPromoCodeReward: {
+            /** @description The reward */
+            reward: components["schemas"]["GooglePlayPromoCodeReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramSenderGooglePlayPromoCodeRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramSenderGooglePlayPromoCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramSenderGooglePlayPromoCodeRewardIntervalDeactivation"];
+        };
         ReferralProgramSenderRevenueCatEntitlementRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
@@ -1038,6 +1203,8 @@ export interface components {
             credit: components["schemas"]["ReferralProgramSenderCreditReward"][];
             /** @description The program offer code rewards */
             offer_code: components["schemas"]["ReferralProgramSenderOfferCodeReward"][];
+            /** @description The program Google Play promo code rewards */
+            googleplay_promo_code: components["schemas"]["ReferralProgramSenderGooglePlayPromoCodeReward"][];
             /** @description The program RevenueCat entitlement rewards */
             revenuecat_entitlement: components["schemas"]["ReferralProgramSenderRevenueCatEntitlementReward"][];
             /** @description The program RevenueCat offering rewards */
@@ -1187,6 +1354,54 @@ export interface components {
              */
             deactivation: components["schemas"]["ReferralProgramReceiverOfferCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverOfferCodeRewardIntervalDeactivation"];
         };
+        ReferralProgramReceiverGooglePlayPromoCodeRewardNeverDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example never
+             * @enum {string}
+             */
+            variant: "never";
+        };
+        ReferralProgramReceiverGooglePlayPromoCodeRewardIntervalDeactivation: {
+            /**
+             * @description The variant of the deactivation configuration
+             * @example interval
+             * @enum {string}
+             */
+            variant: "interval";
+            /**
+             * @description The duration of the deactivation configuration
+             * @example 1
+             */
+            duration: number;
+            /**
+             * @description The period of the deactivation configuration
+             * @example days
+             * @enum {string}
+             */
+            period: "days" | "months" | "years";
+        };
+        ReferralProgramReceiverGooglePlayPromoCodeRewardActivation: {
+            /**
+             * @description The variant of the activation configuration
+             * @example claim
+             * @enum {string}
+             */
+            variant: "claim";
+        };
+        ReferralProgramReceiverGooglePlayPromoCodeReward: {
+            /** @description The reward */
+            reward: components["schemas"]["GooglePlayPromoCodeReward"];
+            /** @description The activation configuration */
+            activation: components["schemas"]["ReferralProgramReceiverGooglePlayPromoCodeRewardActivation"];
+            /**
+             * @description The deactivation configuration
+             * @example {
+             *       "variant": "never"
+             *     }
+             */
+            deactivation: components["schemas"]["ReferralProgramReceiverGooglePlayPromoCodeRewardNeverDeactivation"] | components["schemas"]["ReferralProgramReceiverGooglePlayPromoCodeRewardIntervalDeactivation"];
+        };
         ReferralProgramReceiverRevenueCatEntitlementRewardNeverDeactivation: {
             /**
              * @description The variant of the deactivation configuration
@@ -1290,6 +1505,8 @@ export interface components {
             credit: components["schemas"]["ReferralProgramReceiverCreditReward"][];
             /** @description The program offer code rewards */
             offer_code: components["schemas"]["ReferralProgramReceiverOfferCodeReward"][];
+            /** @description The program Google Play promo code rewards */
+            googleplay_promo_code: components["schemas"]["ReferralProgramReceiverGooglePlayPromoCodeReward"][];
             /** @description The program RevenueCat entitlement rewards */
             revenuecat_entitlement: components["schemas"]["ReferralProgramReceiverRevenueCatEntitlementReward"][];
             /** @description The program RevenueCat offering rewards */
@@ -1459,6 +1676,8 @@ export interface components {
             credit: components["schemas"]["UserCreditRewardActive"][];
             /** @description The referral user offer code rewards */
             offer_code: components["schemas"]["UserOfferCodeRewardActive"][];
+            /** @description The referral user Google Play promo code rewards */
+            googleplay_promo_code: components["schemas"]["UserGooglePlayPromoCodeRewardActive"][];
             /** @description The referral user RevenueCat entitlement rewards */
             revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardActive"][];
             /** @description The referral user RevenueCat offering rewards */
