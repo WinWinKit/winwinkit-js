@@ -150,7 +150,7 @@ export default class WinWinKit {
   }
 
   private createClient() {
-    return createClient<paths>({baseUrl: "https://api-v1.winwinkit.com"})
+    return createClient<paths>({ baseUrl: "https://api.winwinkit.com" });
   }
 
   private createAuthHeader() {
