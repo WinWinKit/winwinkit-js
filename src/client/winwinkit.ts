@@ -55,7 +55,6 @@ export default class WinWinKit {
    * @param appUserId The app user id to create the user for.
    * @param isPremium Whether the user is a premium user. Optional.
    * @param firstSeenAt The date and time the user was first seen. Optional.
-   * @param lastSeenAt The date and time the user was last seen. Optional.
    * @param metadata The metadata of the user. Optional.
    * @returns An object containing either the created/updated user or errors information.
    */
@@ -63,13 +62,11 @@ export default class WinWinKit {
     appUserId,
     isPremium,
     firstSeenAt,
-    lastSeenAt,
     metadata,
   }: {
     appUserId: string;
     isPremium?: boolean;
     firstSeenAt?: Date;
-    lastSeenAt?: Date;
     metadata?: Record<string, never>;
   }): Promise<
     { user: User; errors: null } | { user: null; errors: ErrorObject[] }
@@ -83,7 +80,6 @@ export default class WinWinKit {
         app_user_id: appUserId,
         is_premium: isPremium,
         first_seen_at: firstSeenAt?.toISOString(),
-        last_seen_at: lastSeenAt?.toISOString(),
         metadata,
       },
     });
