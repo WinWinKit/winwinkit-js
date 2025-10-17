@@ -54,6 +54,7 @@ export default class WinWinKit {
    * Create or update a user.
    * @param appUserId The app user id to create the user for.
    * @param isPremium Whether the user is a premium user. Optional.
+   * @param isTrial Whether the user is a trial user. Optional.
    * @param firstSeenAt The date and time the user was first seen. Optional.
    * @param metadata The metadata of the user. Optional.
    * @returns An object containing either the created/updated user or errors information.
@@ -61,11 +62,13 @@ export default class WinWinKit {
   public async createOrUpdateUser({
     appUserId,
     isPremium,
+    isTrial,
     firstSeenAt,
     metadata,
   }: {
     appUserId: string;
     isPremium?: boolean;
+    isTrial?: boolean;
     firstSeenAt?: Date;
     metadata?: Record<string, never>;
   }): Promise<
@@ -79,6 +82,7 @@ export default class WinWinKit {
       body: {
         app_user_id: appUserId,
         is_premium: isPremium,
+        is_trial: isTrial,
         first_seen_at: firstSeenAt?.toISOString(),
         metadata,
       },

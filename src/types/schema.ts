@@ -226,6 +226,11 @@ export interface components {
              */
             app_user_id: string;
             /**
+             * @description Whether the user is a trial user.
+             * @example false
+             */
+            is_trial?: boolean | null;
+            /**
              * @description Whether the user is a premium user.
              * @example false
              */
@@ -1580,6 +1585,11 @@ export interface components {
              * @example https://appname.wwk.link/XYZ123
              */
             referral_code_link: string | null;
+            /**
+             * @description Whether the user is a trial user.
+             * @example false
+             */
+            is_trial: boolean | null;
             /**
              * @description Whether the user is a premium user.
              * @example false
