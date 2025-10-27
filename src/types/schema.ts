@@ -268,6 +268,20 @@ export interface components {
              */
             eligible_until: string | null;
         };
+        /** @description The referred by of the user. */
+        UserReferredBy: {
+            /**
+             * @description The code claimed by the user. Can be null if the code's entity has been deleted.
+             * @example XYZ123
+             */
+            code: string | null;
+            /**
+             * @description The type of the code. Can be one of "affiliate", "promo", or "referral".
+             * @example referral
+             * @enum {string}
+             */
+            type: "affiliate" | "promo" | "referral";
+        };
         /** @description The stats of the user. */
         UserStats: {
             /**
@@ -1615,6 +1629,8 @@ export interface components {
             metadata: Record<string, never>;
             /** @description The claim code eligibility of the user. */
             claim_code_eligibility: components["schemas"]["UserClaimCodeEligibility"];
+            /** @description The referred by object of the user. */
+            referred_by: components["schemas"]["UserReferredBy"] | null;
             /** @description The stats of the user. */
             stats: components["schemas"]["UserStats"];
             /** @description The rewards of the user. */
