@@ -14,13 +14,16 @@ import type { paths } from "../types/schema";
  */
 export default class WinWinKit {
   private readonly apiKey: string;
+  private readonly baseUrl: string;
 
   /**
    * Construct a new WinWinKit instance.
    * @param apiKey The API key to configure the client with.
+   * @param baseUrl The base URL to configure the client with. Optional.
    */
-  constructor({ apiKey }: { apiKey: string }) {
+  constructor({ apiKey, baseUrl }: { apiKey: string; baseUrl?: string }) {
     this.apiKey = apiKey;
+    this.baseUrl = baseUrl || "https://api.winwinkit.com";
   }
 
   /**
@@ -224,7 +227,7 @@ export default class WinWinKit {
   }
 
   private createClient() {
-    return createClient<paths>({ baseUrl: "https://api.winwinkit.com" });
+    return createClient<paths>({ baseUrl: this.baseUrl });
   }
 
   private createAuthHeader() {
