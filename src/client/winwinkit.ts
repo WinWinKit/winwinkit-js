@@ -226,6 +226,54 @@ export default class WinWinKit {
     };
   }
 
+  /**
+   * Grant a reward.
+   * Note: only granting for credit rewards is currently supported.
+   * Note: secret API key must be used with this operation.
+   * @param appUserId The app user id to grant the reward for.
+   * @param key The key of the reward to grant.
+   * @returns An object containing either the updated user and granted rewards, or errors information.
+   */
+  public async grantReward({
+    appUserId,
+    key,
+  }: {
+    appUserId: string;
+    key: string;
+  }): Promise<
+    | {
+        user: User;
+        rewardsGranted: UserRewardsGranted;
+        errors: null;
+      }
+    | {
+        user: null;
+        rewardsGranted: null;
+        errors: ErrorObject[];
+      }
+  > {
+    const client = this.createClient();
+    const { data, error } = await client.POST(
+      "/users/{app_user_id}/rewards/grant",
+      {
+        params: {
+          path: { app_user_id: appUserId },
+          header: this.createAuthHeader(),
+        },
+        body: {
+          key: key,
+        },
+      },
+    );
+    if (error)
+      return { user: null, rewardsGranted: null, errors: error.errors };
+    return {
+      user: data.data.user,
+      rewardsGranted: data.data.rewards_granted,
+      errors: null,
+    };
+  }
+
   private createClient() {
     return createClient<paths>({ baseUrl: this.baseUrl });
   }

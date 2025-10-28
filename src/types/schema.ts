@@ -84,6 +84,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/{app_user_id}/rewards/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant a Reward
+         * @description Grants a reward for a user. Note 1: currently only granting of credit rewards is supported. Note 2: this endpoint is only accessible with a secret API key.
+         */
+        post: operations["grantReward"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{app_user_id}/claim-code": {
         parameters: {
             query?: never;
@@ -1688,12 +1708,12 @@ export interface components {
         UserWithdrawCreditsResponse: {
             data: components["schemas"]["UserWithdrawCreditsResponseData"];
         };
-        UserClaimCodeRequest: {
+        UserGrantRewardRequest: {
             /**
-             * @description The code to claim. Can be affiliate, promo or referral code.
-             * @example XYZ123
+             * @description The key of the reward to grant
+             * @example discounted-offering
              */
-            code: string;
+            key: string;
         };
         UserRewardsGranted: {
             /** @description The referral user basic rewards */
@@ -1708,6 +1728,22 @@ export interface components {
             revenuecat_entitlement: components["schemas"]["UserRevenueCatEntitlementRewardActive"][];
             /** @description The referral user RevenueCat offering rewards */
             revenuecat_offering: components["schemas"]["UserRevenueCatOfferingRewardActive"][];
+        };
+        UserGrantRewardResponseData: {
+            /** @description The rewards granted to the user. */
+            rewards_granted: components["schemas"]["UserRewardsGranted"];
+            /** @description The updated user. */
+            user: components["schemas"]["User"];
+        };
+        UserGrantRewardResponse: {
+            data: components["schemas"]["UserGrantRewardResponseData"];
+        };
+        UserClaimCodeRequest: {
+            /**
+             * @description The code to claim. Can be affiliate, promo or referral code.
+             * @example XYZ123
+             */
+            code: string;
         };
         UserClaimCodeResponseData: {
             /** @description The rewards granted to the user. */
@@ -1904,6 +1940,81 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserWithdrawCreditsResponse"];
+                };
+            };
+            /** @description The request is invalid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The user has not been found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The request is invalid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    grantReward: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The secret API key. */
+                "x-api-key": string;
+            };
+            path: {
+                /** @description The app user id of the user to grant a reward to. */
+                app_user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserGrantRewardRequest"];
+            };
+        };
+        responses: {
+            /** @description The reward has been already available for the user and cannot be granted again. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGrantRewardResponse"];
+                };
+            };
+            /** @description The reward has been successfully granted. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGrantRewardResponse"];
                 };
             };
             /** @description The request is invalid. */
