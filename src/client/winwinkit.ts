@@ -60,6 +60,7 @@ export default class WinWinKit {
    * @param isTrial Whether the user is a trial user. Optional.
    * @param firstSeenAt The date and time the user was first seen. Optional.
    * @param metadata The metadata of the user. Optional.
+   * @param stripeCustomerId The stripe customer id of the user. Optional.
    * @returns An object containing either the created/updated user or errors information.
    */
   public async createOrUpdateUser({
@@ -68,12 +69,14 @@ export default class WinWinKit {
     isTrial,
     firstSeenAt,
     metadata,
+    stripeCustomerId,
   }: {
     appUserId: string;
     isPremium?: boolean;
     isTrial?: boolean;
     firstSeenAt?: Date;
     metadata?: Record<string, never>;
+    stripeCustomerId?: string;
   }): Promise<
     { user: User; errors: null } | { user: null; errors: ErrorObject[] }
   > {
@@ -88,6 +91,7 @@ export default class WinWinKit {
         is_trial: isTrial,
         first_seen_at: firstSeenAt?.toISOString(),
         metadata,
+        stripe_customer_id: stripeCustomerId,
       },
     });
     if (error) return { user: null, errors: error.errors };

@@ -273,6 +273,11 @@ export interface components {
              * @example {}
              */
             metadata?: Record<string, never>;
+            /**
+             * @description The unique identifier of the user in Stripe.
+             * @example cus_xx8RUejD283Qvu
+             */
+            stripe_customer_id?: string | null;
         };
         /** @description User's eligibility to claim referral code. */
         UserClaimCodeEligibility: {
@@ -1647,6 +1652,11 @@ export interface components {
              * @example {}
              */
             metadata: Record<string, never>;
+            /**
+             * @description The unique identifier of the user in Stripe.
+             * @example cus_xx8RUejD283Qvu
+             */
+            stripe_customer_id: string | null;
             /** @description The claim code eligibility of the user. */
             claim_code_eligibility: components["schemas"]["UserClaimCodeEligibility"];
             /** @description The referred by object of the user. */
