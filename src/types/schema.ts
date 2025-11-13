@@ -275,7 +275,7 @@ export interface components {
             metadata?: Record<string, never>;
             /**
              * @description The unique identifier of the user in Stripe.
-             * @example cus_xx8RUejD283Qvu
+             * @example cus_1234567890
              */
             stripe_customer_id?: string | null;
         };
@@ -1654,7 +1654,7 @@ export interface components {
             metadata: Record<string, never>;
             /**
              * @description The unique identifier of the user in Stripe.
-             * @example cus_xx8RUejD283Qvu
+             * @example cus_1234567890
              */
             stripe_customer_id: string | null;
             /** @description The claim code eligibility of the user. */
@@ -1686,6 +1686,11 @@ export interface components {
              * @example 100
              */
             amount: number;
+            /**
+             * @description An optional operation id that ensures the same operation won't be performed again
+             * @example 821fae4b5-0123-4567-9152-5297086a161c
+             */
+            operation_id?: string | null;
         };
         UserWithdrawCreditsResult: {
             /**
@@ -1724,6 +1729,11 @@ export interface components {
              * @example discounted-offering
              */
             key: string;
+            /**
+             * @description An optional operation id that ensures the same operation won't be performed again
+             * @example 821fae4b5-0123-4567-9152-5297086a161c
+             */
+            operation_id?: string | null;
         };
         UserRewardsGranted: {
             /** @description The referral user basic rewards */

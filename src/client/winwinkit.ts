@@ -149,16 +149,19 @@ export default class WinWinKit {
    * @param appUserId The app user id to withdraw the credits for.
    * @param key The key of the reward to withdraw.
    * @param amount The amount to withdraw.
+   * @param operationId The operation id to withdraw the credits for. Optional.
    * @returns An object containing either the updated user and withdrawal result, or errors information.
    */
   public async withdrawCredits({
     appUserId,
     key,
     amount,
+    operationId,
   }: {
     appUserId: string;
     key: string;
     amount: number;
+    operationId?: string | null;
   }): Promise<
     | {
         user: User;
@@ -178,6 +181,7 @@ export default class WinWinKit {
         body: {
           key: key,
           amount: amount,
+          operation_id: operationId,
         },
       },
     );
@@ -236,14 +240,17 @@ export default class WinWinKit {
    * Note: secret API key must be used with this operation.
    * @param appUserId The app user id to grant the reward for.
    * @param key The key of the reward to grant.
+   * @param operationId The operation id to grant the reward for. Optional.
    * @returns An object containing either the updated user and granted rewards, or errors information.
    */
   public async grantReward({
     appUserId,
     key,
+    operationId,
   }: {
     appUserId: string;
     key: string;
+    operationId?: string | null;
   }): Promise<
     | {
         user: User;
@@ -266,6 +273,7 @@ export default class WinWinKit {
         },
         body: {
           key: key,
+          operation_id: operationId,
         },
       },
     );
