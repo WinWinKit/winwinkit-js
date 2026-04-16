@@ -1,7 +1,5 @@
 import createClient from "openapi-fetch";
 import {
-  AppStoreOfferCode,
-  AppStoreSubscription,
   ErrorObject,
   User,
   UserRewardsGranted,
@@ -190,46 +188,6 @@ export default class WinWinKit {
     return {
       user: data.data.user,
       withdrawResult: data.data.withdraw_result,
-      errors: null,
-    };
-  }
-
-  /**
-   * Fetch an offer code and subscription from the App Store.
-   * @param offerCodeId The offer code id to fetch.
-   * @returns An object containing either the App Store offer code and subscription, or errors information.
-   */
-  public async fetchOfferCode({
-    offerCodeId,
-  }: {
-    offerCodeId: string;
-  }): Promise<
-    | {
-        offerCode: AppStoreOfferCode;
-        subscription: AppStoreSubscription;
-        errors: null;
-      }
-    | { offerCode: null; subscription: null; errors: ErrorObject[] }
-  > {
-    const client = this.createClient();
-    const { data, error } = await client.GET(
-      "/app-store/offer-codes/{offer_code_id}",
-      {
-        params: {
-          path: { offer_code_id: offerCodeId },
-          header: this.createAuthHeader(),
-        },
-      },
-    );
-    if (error)
-      return {
-        offerCode: null,
-        subscription: null,
-        errors: error.errors,
-      };
-    return {
-      offerCode: data.data.offer_code,
-      subscription: data.data.subscription,
       errors: null,
     };
   }
