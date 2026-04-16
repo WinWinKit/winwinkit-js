@@ -13,11 +13,52 @@ export interface paths {
         };
         /**
          * Get Offer Code
-         * @description Get an offer code with subscription and prices by the offer code id.
+         * @deprecated
+         * @description Get an offer code with subscription and prices by the offer code id. Deprecated: this endpoint is deprecated and will be removed in a future release; please migrate away from it.
          */
         get: operations["getOfferCode"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{app_user_id}/rewards/withdraw-credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Withdraw Credits
+         * @description Withdraws credits from a user.
+         */
+        post: operations["withdrawCredits"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{app_user_id}/rewards/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant a Reward
+         * @description Grants a reward for a user. Note 1: currently only granting of credit rewards is supported. Note 2: this endpoint is only accessible with a secret API key.
+         */
+        post: operations["grantReward"];
         delete?: never;
         options?: never;
         head?: never;
@@ -64,7 +105,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{app_user_id}/rewards/withdraw-credits": {
+    "/users/{app_user_id}/transactions/app-store": {
         parameters: {
             query?: never;
             header?: never;
@@ -74,17 +115,17 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Withdraw Credits
-         * @description Withdraws credits from a user.
+         * Register App Store Transaction
+         * @description Registers the mapping between a user and their Apple originalTransactionId.
          */
-        post: operations["withdrawCredits"];
+        post: operations["registerAppStoreTransaction"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/users/{app_user_id}/rewards/grant": {
+    "/users/{app_user_id}/transactions/google-play": {
         parameters: {
             query?: never;
             header?: never;
@@ -94,10 +135,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Grant a Reward
-         * @description Grants a reward for a user. Note 1: currently only granting of credit rewards is supported. Note 2: this endpoint is only accessible with a secret API key.
+         * Register Google Play Transaction
+         * @description Registers the mapping between a user and their Google Play purchaseToken.
          */
-        post: operations["grantReward"];
+        post: operations["registerGooglePlayTransaction"];
         delete?: never;
         options?: never;
         head?: never;
@@ -239,45 +280,44 @@ export interface components {
         OfferCodeResponse: {
             data: components["schemas"]["OfferCodeResponseData"];
         };
-        UserCreateRequest: {
+        UserWithdrawCreditsRequest: {
             /**
-             * @description The unique identifier of the referral user in your app.
-             * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
+             * @description The key of the credit reward to withdraw
+             * @example credit-reward
              */
-            app_user_id: string;
+            key: string;
             /**
-             * @description Whether the user is a trial user.
-             * @example false
+             * @description The amount of credits to withdraw
+             * @example 100
              */
-            is_trial?: boolean | null;
+            amount: number;
             /**
-             * @description Whether the user is a premium user.
-             * @example false
+             * @description An optional operation id that ensures the same operation won't be performed again
+             * @example 821fae4b5-0123-4567-9152-5297086a161c
              */
-            is_premium?: boolean | null;
+            operation_id?: string | null;
+        };
+        UserWithdrawCreditsResult: {
             /**
-             * Format: date-time
-             * @description The date when the user was first seen at.
-             * @example 2024-11-10T10:28:18.104Z
+             * @description The amount of credits available at the start
+             * @example 100
              */
-            first_seen_at?: string | null;
+            credits_available_at_start: number;
             /**
-             * Format: date-time
-             * @deprecated
-             * @description The date when the user was last seen at. Deprecated and will be removed in the future.
-             * @example null
+             * @description The amount of credits available at the end
+             * @example 90
              */
-            last_seen_at?: string | null;
+            credits_available_at_end: number;
             /**
-             * @description The metadata of the user.
-             * @example {}
+             * @description The amount of credits requested to withdraw
+             * @example 10
              */
-            metadata?: Record<string, never>;
+            credits_requested_to_withdraw: number;
             /**
-             * @description The unique identifier of the user in Stripe.
-             * @example cus_1234567890
+             * @description The amount of credits withdrawn
+             * @example 10
              */
-            stripe_customer_id?: string | null;
+            credits_withdrawn: number;
         };
         /** @description User's eligibility to claim referral code. */
         UserClaimCodeEligibility: {
@@ -345,7 +385,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -406,7 +446,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -482,7 +522,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -558,7 +598,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -639,7 +679,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -705,7 +745,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -1582,7 +1622,7 @@ export interface components {
              * @description The program metadata
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * @description The program distribution percentage
              * @example 100
@@ -1651,7 +1691,7 @@ export interface components {
              * @description The metadata of the user.
              * @example {}
              */
-            metadata: Record<string, never>;
+            metadata: Record<string, never> | null;
             /**
              * @description The unique identifier of the user in Stripe.
              * @example cus_1234567890
@@ -1667,52 +1707,6 @@ export interface components {
             rewards: components["schemas"]["UserRewards"];
             /** @description The program of the user. */
             referral_program: components["schemas"]["ReferralProgram"] | null;
-        };
-        UserResponseData: {
-            /** @description The user */
-            user: components["schemas"]["User"];
-        };
-        UserResponse: {
-            data: components["schemas"]["UserResponseData"];
-        };
-        UserWithdrawCreditsRequest: {
-            /**
-             * @description The key of the credit reward to withdraw
-             * @example credit-reward
-             */
-            key: string;
-            /**
-             * @description The amount of credits to withdraw
-             * @example 100
-             */
-            amount: number;
-            /**
-             * @description An optional operation id that ensures the same operation won't be performed again
-             * @example 821fae4b5-0123-4567-9152-5297086a161c
-             */
-            operation_id?: string | null;
-        };
-        UserWithdrawCreditsResult: {
-            /**
-             * @description The amount of credits available at the start
-             * @example 100
-             */
-            credits_available_at_start: number;
-            /**
-             * @description The amount of credits available at the end
-             * @example 90
-             */
-            credits_available_at_end: number;
-            /**
-             * @description The amount of credits requested to withdraw
-             * @example 10
-             */
-            credits_requested_to_withdraw: number;
-            /**
-             * @description The amount of credits withdrawn
-             * @example 10
-             */
-            credits_withdrawn: number;
         };
         UserWithdrawCreditsResponseData: {
             /** @description The withdraw result */
@@ -1757,6 +1751,77 @@ export interface components {
         };
         UserGrantRewardResponse: {
             data: components["schemas"]["UserGrantRewardResponseData"];
+        };
+        UserCreateRequest: {
+            /**
+             * @description The unique identifier of the referral user in your app.
+             * @example 821fae4b5-1a2d-4c1e-9152-5297086a161c
+             */
+            app_user_id: string;
+            /**
+             * @description Whether the user is a trial user.
+             * @example false
+             */
+            is_trial?: boolean | null;
+            /**
+             * @description Whether the user is a premium user.
+             * @example false
+             */
+            is_premium?: boolean | null;
+            /**
+             * Format: date-time
+             * @description The date when the user was first seen at.
+             * @example 2024-11-10T10:28:18.104Z
+             */
+            first_seen_at?: string | null;
+            /**
+             * Format: date-time
+             * @deprecated
+             * @description The date when the user was last seen at. Deprecated and will be removed in the future.
+             * @example null
+             */
+            last_seen_at?: string | null;
+            /**
+             * @description The metadata of the user.
+             * @example {}
+             */
+            metadata?: Record<string, never> | null;
+            /**
+             * @description The unique identifier of the user in Stripe.
+             * @example cus_1234567890
+             */
+            stripe_customer_id?: string | null;
+        };
+        UserResponseData: {
+            /** @description The user */
+            user: components["schemas"]["User"];
+        };
+        UserResponse: {
+            data: components["schemas"]["UserResponseData"];
+        };
+        UserRegisterAppStoreTransactionRequest: {
+            /**
+             * @description Apple's originalTransactionId from StoreKit.
+             * @example 2000000123456789
+             */
+            original_transaction_id: string;
+            /**
+             * @description StoreKit 2 appAccountToken UUID.
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            app_account_token?: string | null;
+        };
+        UserRegisterGooglePlayTransactionRequest: {
+            /**
+             * @description Google Play's purchaseToken from the purchase flow.
+             * @example opaque-purchase-token-string
+             */
+            purchase_token: string;
+            /**
+             * @description Set in BillingFlowParams.setObfuscatedAccountId() — used for better matching.
+             * @example user-account-id-hash
+             */
+            obfuscated_external_account_id?: string | null;
         };
         UserClaimCodeRequest: {
             /**
@@ -1818,113 +1883,6 @@ export interface operations {
             };
             /** @description Failed to fetch offer code because request to the App Store Connect API failed. */
             424: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-        };
-    };
-    createOrUpdateUser: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description The API key to authenticate with. */
-                "x-api-key": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description The user has been successfully updated. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponse"];
-                };
-            };
-            /** @description The user has been successfully created. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponse"];
-                };
-            };
-            /** @description The request is invalid. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-            /** @description The request is invalid. */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-        };
-    };
-    getUser: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description The API key to authenticate with. */
-                "x-api-key": string;
-            };
-            path: {
-                /** @description The app user id of the user to retrieve. */
-                app_user_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The user has been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-            /** @description The user has not been found. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2066,6 +2024,205 @@ export interface operations {
             };
             /** @description The request is invalid. */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    createOrUpdateUser: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description The user has been successfully updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description The user has been successfully created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description The request is invalid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The request is invalid. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    getUser: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": string;
+            };
+            path: {
+                /** @description The app user id of the user to retrieve. */
+                app_user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The user has been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The user has not been found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    registerAppStoreTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": string;
+            };
+            path: {
+                /** @description The app user id of the user. */
+                app_user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserRegisterAppStoreTransactionRequest"];
+            };
+        };
+        responses: {
+            /** @description The transaction mapping has been registered. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The user has not been found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+        };
+    };
+    registerGooglePlayTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The API key to authenticate with. */
+                "x-api-key": string;
+            };
+            path: {
+                /** @description The app user id of the user. */
+                app_user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserRegisterGooglePlayTransactionRequest"];
+            };
+        };
+        responses: {
+            /** @description The transaction mapping has been registered. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorsResponse"];
+                };
+            };
+            /** @description The user has not been found. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
