@@ -22,9 +22,15 @@ There are no tests or linting configured.
 
 This is `@winwinkit/sdk`, a TypeScript SDK for the WinWinKit API built on `openapi-fetch`.
 
-**Type generation flow:** The OpenAPI spec at `api.winwinkit.com/openapi-yaml` is converted to TypeScript types via `openapi-typescript` into `src/types/schema.ts` (auto-generated, do not edit manually). Thin type aliases in `src/types/*.ts` re-export specific `components['schemas']` entries for public use.
+**Type generation flow:** The OpenAPI spec at `api.winwinkit.com/openapi-yaml` is converted to TypeScript types via `openapi-typescript` into `src/types/schema.ts` (auto-generated, do not edit manually). Thin type aliases in `src/types/*.ts` re-export specific `components['schemas']` entries as the public surface; `src/types/index.ts` barrels them.
 
-**Client:** `src/client/winwinkit.ts` contains the `WinWinKit` class — the sole public interface. It wraps `openapi-fetch`'s typed client with methods that accept camelCase params, call the REST API, and return discriminated unions of `{ data, errors: null } | { data: null, errors: ErrorObject[] }`. Authentication is via `x-api-key` header.
+**Client:** `src/client/winwinkit.ts` contains the `WinWinKit` class — the sole public interface. It wraps `openapi-fetch`'s typed client (`createClient<paths>`) with one public method per endpoint. Authentication is via the `x-api-key` header, attached per-request by `createAuthHeader()`. `baseUrl` defaults to `https://api.winwinkit.com` and is overridable via the constructor.
+
+**Method conventions — follow these when adding endpoints:**
+- Inputs are destructured camelCase objects; translate to snake_case in the request `body`/`path` (e.g. `appUserId` → `app_user_id`).
+- `Date` inputs are serialized with `.toISOString()` before sending.
+- Return type is a discriminated union keyed by domain-specific names (e.g. `{ user, errors: null } | { user: null, errors: ErrorObject[] }`, or with additional success fields like `rewardsGranted`, `withdrawResult`). Do **not** use a generic `data` key — pull the relevant entities out of `data.data.*` and name them explicitly.
+- On error, return `{ ...nulls, errors: error.errors }`. `fetchUser` is the one exception: a 404 is treated as a successful "not found" and returns `{ user: null, errors: null }`.
 
 **Exports:** `src/index.ts` re-exports the `WinWinKit` class (default + named) and all types from `src/types/index.ts`.
 
