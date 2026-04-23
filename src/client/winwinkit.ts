@@ -208,7 +208,7 @@ export default class WinWinKit {
     appUserId: string;
     originalTransactionId: string;
     appAccountToken?: string | null;
-  }): Promise<{ errors: null } | { errors: ErrorObject[] }> {
+  }): Promise<{ errors: ErrorObject[] | null }> {
     const client = this.createClient();
     const { error } = await client.POST(
       "/users/{app_user_id}/transactions/app-store",
@@ -243,7 +243,7 @@ export default class WinWinKit {
     appUserId: string;
     purchaseToken: string;
     obfuscatedExternalAccountId?: string | null;
-  }): Promise<{ errors: null } | { errors: ErrorObject[] }> {
+  }): Promise<{ errors: ErrorObject[] | null }> {
     const client = this.createClient();
     const { error } = await client.POST(
       "/users/{app_user_id}/transactions/google-play",
