@@ -193,6 +193,76 @@ export default class WinWinKit {
   }
 
   /**
+   * Register an App Store transaction.
+   * Registers the mapping between a user and their Apple originalTransactionId.
+   * @param appUserId The app user id to register the transaction for.
+   * @param originalTransactionId Apple's originalTransactionId from StoreKit.
+   * @param appAccountToken StoreKit 2 appAccountToken UUID. Optional.
+   * @returns An object containing errors information, or null errors on success.
+   */
+  public async registerAppStoreTransaction({
+    appUserId,
+    originalTransactionId,
+    appAccountToken,
+  }: {
+    appUserId: string;
+    originalTransactionId: string;
+    appAccountToken?: string | null;
+  }): Promise<{ errors: null } | { errors: ErrorObject[] }> {
+    const client = this.createClient();
+    const { error } = await client.POST(
+      "/users/{app_user_id}/transactions/app-store",
+      {
+        params: {
+          path: { app_user_id: appUserId },
+          header: this.createAuthHeader(),
+        },
+        body: {
+          original_transaction_id: originalTransactionId,
+          app_account_token: appAccountToken,
+        },
+      },
+    );
+    if (error) return { errors: error.errors };
+    return { errors: null };
+  }
+
+  /**
+   * Register a Google Play transaction.
+   * Registers the mapping between a user and their Google Play purchaseToken.
+   * @param appUserId The app user id to register the transaction for.
+   * @param purchaseToken Google Play's purchaseToken from the purchase flow.
+   * @param obfuscatedExternalAccountId Value set in BillingFlowParams.setObfuscatedAccountId() — used for better matching. Optional.
+   * @returns An object containing errors information, or null errors on success.
+   */
+  public async registerGooglePlayTransaction({
+    appUserId,
+    purchaseToken,
+    obfuscatedExternalAccountId,
+  }: {
+    appUserId: string;
+    purchaseToken: string;
+    obfuscatedExternalAccountId?: string | null;
+  }): Promise<{ errors: null } | { errors: ErrorObject[] }> {
+    const client = this.createClient();
+    const { error } = await client.POST(
+      "/users/{app_user_id}/transactions/google-play",
+      {
+        params: {
+          path: { app_user_id: appUserId },
+          header: this.createAuthHeader(),
+        },
+        body: {
+          purchase_token: purchaseToken,
+          obfuscated_external_account_id: obfuscatedExternalAccountId,
+        },
+      },
+    );
+    if (error) return { errors: error.errors };
+    return { errors: null };
+  }
+
+  /**
    * Grant a reward.
    * Note: only granting for credit rewards is currently supported.
    * Note: secret API key must be used with this operation.
