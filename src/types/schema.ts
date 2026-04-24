@@ -4,27 +4,6 @@
  */
 
 export interface paths {
-    "/app-store/offer-codes/{offer_code_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Offer Code
-         * @deprecated
-         * @description Get an offer code with subscription and prices by the offer code id. Deprecated: this endpoint is deprecated and will be removed in a future release; please migrate away from it.
-         */
-        get: operations["getOfferCode"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/users/{app_user_id}/rewards/withdraw-credits": {
         parameters: {
             query?: never;
@@ -180,106 +159,6 @@ export interface components {
         ErrorsResponse: {
             errors: components["schemas"]["ErrorObject"][];
         };
-        /** @description The price */
-        AppStorePrice: {
-            /**
-             * @description The price territory.
-             * @example USA
-             */
-            territory: string;
-            /**
-             * @description The price amount.
-             * @example 99.99
-             */
-            price: string;
-            /**
-             * @description The price currency.
-             * @example USD
-             */
-            currency: string;
-        };
-        /** @description The offer code */
-        AppStoreOfferCode: {
-            /**
-             * @description The offer code id.
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            id: string;
-            /**
-             * @description The offer code name.
-             * @example Three months at 50% off
-             */
-            name: string;
-            /**
-             * @description The offer code customer eligibilities.
-             * @example [
-             *       "NEW",
-             *       "EXISTING",
-             *       "EXPIRED"
-             *     ]
-             */
-            customer_eligibilities: string[];
-            /**
-             * @description The offer code offer eligibility.
-             * @example STACK_WITH_INTRO_OFFERS
-             * @enum {string}
-             */
-            offer_eligibility: "STACK_WITH_INTRO_OFFERS" | "REPLACE_INTRO_OFFERS";
-            /**
-             * @description The offer code duration.
-             * @example THREE_MONTHS
-             * @enum {string}
-             */
-            duration: "THREE_DAYS" | "ONE_WEEK" | "TWO_WEEKS" | "ONE_MONTH" | "TWO_MONTHS" | "THREE_MONTHS" | "SIX_MONTHS" | "ONE_YEAR";
-            /**
-             * @description The offer code offer mode.
-             * @example PAY_AS_YOU_GO
-             * @enum {string}
-             */
-            offer_mode: "PAY_AS_YOU_GO" | "PAY_UP_FRONT" | "FREE_TRIAL";
-            /**
-             * @description The offer code number of periods.
-             * @example 1
-             */
-            number_of_periods: number;
-            /** @description The offer code prices. */
-            prices: components["schemas"]["AppStorePrice"][] | null;
-        };
-        /** @description The subscription on the App Store */
-        AppStoreSubscription: {
-            /**
-             * @description The subscription id.
-             * @example 1234567890
-             */
-            id: string;
-            /**
-             * @description The product id.
-             * @example com.winwinkit.app.yearly
-             */
-            product_id: string;
-            /**
-             * @description The subscription name.
-             * @example Yearly
-             */
-            name: string;
-            /**
-             * @description The subscription period.
-             * @example ONE_YEAR
-             * @enum {string}
-             */
-            subscription_period: "ONE_WEEK" | "ONE_MONTH" | "TWO_MONTHS" | "THREE_MONTHS" | "SIX_MONTHS" | "ONE_YEAR";
-            /** @description The prices of the subscription. */
-            prices: components["schemas"]["AppStorePrice"][];
-        };
-        OfferCodeResponseData: {
-            /** @description The offer code */
-            offer_code: components["schemas"]["AppStoreOfferCode"];
-            /** @description The subscription */
-            subscription: components["schemas"]["AppStoreSubscription"];
-        };
-        OfferCodeResponse: {
-            data: components["schemas"]["OfferCodeResponseData"];
-        };
         UserWithdrawCreditsRequest: {
             /**
              * @description The key of the credit reward to withdraw
@@ -385,7 +264,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -446,7 +325,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -522,7 +401,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -598,7 +477,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -679,7 +558,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -745,7 +624,7 @@ export interface components {
              * @description The metadata of the reward
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * Format: date-time
              * @description The created at of the reward
@@ -1622,7 +1501,7 @@ export interface components {
              * @description The program metadata
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * @description The program distribution percentage
              * @example 100
@@ -1691,7 +1570,7 @@ export interface components {
              * @description The metadata of the user.
              * @example {}
              */
-            metadata: Record<string, never> | null;
+            metadata: Record<string, never>;
             /**
              * @description The unique identifier of the user in Stripe.
              * @example cus_1234567890
@@ -1785,7 +1664,7 @@ export interface components {
              * @description The metadata of the user.
              * @example {}
              */
-            metadata?: Record<string, never> | null;
+            metadata?: Record<string, never>;
             /**
              * @description The unique identifier of the user in Stripe.
              * @example cus_1234567890
@@ -1848,50 +1727,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getOfferCode: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description The API key to authenticate with. */
-                "x-api-key": string;
-            };
-            path: {
-                /** @description The offer code id to retrieve. */
-                offer_code_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Offer Code response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferCodeResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-            /** @description Failed to fetch offer code because request to the App Store Connect API failed. */
-            424: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorsResponse"];
-                };
-            };
-        };
-    };
     withdrawCredits: {
         parameters: {
             query?: never;
